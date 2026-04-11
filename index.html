@@ -1,232 +1,226 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>OG Black - Álvaro Díaz</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
-    
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: #000;
-      color: #fff;
-      overflow: hidden;
-      height: 100vh;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OG Black</title>
 
-    .container {
-      width: 100%;
-      max-width: 380px;
-      padding: 0 20px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
-    .lyrics-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 28px;
-      text-align: center;
-    }
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: #000;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    .lyric {
-      font-size: 28px;
-      line-height: 1.35;
-      font-weight: 300;
-      transition: all 0.85s cubic-bezier(0.23, 1, 0.32, 1);
-      opacity: 0.16;
-      transform: translateY(40px);
-    }
+.container {
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
 
-    .lyric.active {
-      opacity: 1;
-      transform: translateY(0);
-      text-shadow: 0 0 40px rgba(255, 255, 255, 0.55);
-    }
+.lyrics-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 
-    .song-info {
-      text-align: center;
-      margin-bottom: 40px;
-    }
+.lyric {
+  position: absolute;
+  width: 100%;
+  font-size: 26px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.3s ease;
+}
 
-    .song-title {
-      font-size: 28px;
-      font-weight: 500;
-    }
+.lyric.active {
+  opacity: 1;
+  transform: translateY(0);
+  text-shadow: 0 0 20px rgba(255,255,255,0.4);
+}
 
-    .song-artist {
-      color: #888;
-      font-size: 17px;
-    }
+.info {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-    #playBtn {
-      width: 72px;
-      height: 72px;
-      background: white;
-      color: black;
-      border-radius: 9999px;
-      font-size: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      transition: all 0.2s;
-    }
+.controls {
+  display: flex;
+  justify-content: center;
+}
 
-    #playBtn:active {
-      transform: scale(0.92);
-    }
-  </style>
+button {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  color: black;
+  font-size: 16px;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="container">
-    <div class="lyrics-container" id="lyricsContainer"></div>
+<div class="container">
 
-    <div class="song-info">
-      <div class="song-title">OG Black</div>
-      <div class="song-artist">Álvaro Díaz & Randy</div>
-    </div>
+  <div id="lyricsContainer" class="lyrics-container"></div>
 
-    <div class="flex justify-center pb-10">
-      <button id="playBtn">▶</button>
-    </div>
+  <div class="info">
+    <h2>OG Black</h2>
+    <p>Álvaro Díaz & Randy</p>
   </div>
 
-  <audio id="audio" src="OGBlack.MP3"></audio>
+  <div class="controls">
+    <button id="playBtn">Play</button>
+  </div>
 
-  <script>
-    const audio = document.getElementById('audio');
-    const playBtn = document.getElementById('playBtn');
-    const container = document.getElementById('lyricsContainer');
+</div>
 
-    const lyricsData = [
-      { time: 11.23, text: "Te saco a pasear" },
-      { time: 15.0,  text: "En un Banshee robao" },
-      { time: 18.7,  text: "Como OG Black" },
-      { time: 21.4,  text: "Como OG Black" },
-      { time: 24.2,  text: "Como OG Black" },
-      { time: 28.0,  text: "Hacemo' una porno" },
-      { time: 31.7,  text: "En la parte de atrá'" },
-      { time: 35.4,  text: "Como OG Black" },
-      { time: 38.2,  text: "Como OG Black" },
-      { time: 41.0,  text: "Como OG Black" },
-      { time: 45.0,  text: "Que no pare el bellaqueo" },
-      { time: 48.0,  text: "Que no pare el bellaqueo" },
-      { time: 51.0,  text: "Que no pare el bellaqueo" },
-      { time: 54.0,  text: "Que no pare el bellaqueo" },
-      { time: 57.0,  text: "Que no pare el bellaqueo" },
-      { time: 60.0,  text: "Que no pare el bellaqueo" },
-      { time: 63.0,  text: "Que no pare el bellaqueo" },
-      { time: 66.0,  text: "Que no pare el bellaqueo" },
+<audio id="audio" src="OGBlack.MP3"></audio>
 
-      { time: 74.0,  text: "Ey, te miro a los ojo' y veo luce'" },
-      { time: 78.0,  text: "Maldito sea el hombre que te use" },
-      { time: 82.0,  text: "Tú-tú te mereces un cangri, tú no estás pa losers" },
-      { time: 88.0,  text: "Que te lleve pa la feria y te gane to los peluche'" },
+<script>
+const audio = document.getElementById('audio');
+const playBtn = document.getElementById('playBtn');
+const container = document.getElementById('lyricsContainer');
 
-      { time: 95.0,  text: "Follow, follow, falo" },
-      { time: 98.0,  text: "Mira lo que caché en el cruce" },
-      { time: 102,   text: "Flores, que la poli no me escuche" },
-      { time: 106,   text: "Tú tienes lo tuyo y eso hace que me enmuse" },
+// 🔥 LRC SOLO CON TU LETRA
+const lrc = `[00:11.70] Te saco a pasear
+[00:14.52] En un Banshee robao
+[00:18.13] Como OG Black
+[00:19.64] Como OG Black
+[00:21.24] Como OG Black
+[00:24.21] Hacemo' una porno
+[00:26.96] En la parte de atrá'
+[00:30.68] Como OG Black
+[00:32.06] Como OG Black
+[00:33.79] Como OG Black
+[00:37.17] Que no pare el bellaqueo
+[00:38.75] Que no pare el bellaqueo
+[00:40.38] Que no pare el bellaqueo
+[00:42.14] Que no pare el bellaqueo
+[00:43.42] Que no pare el bellaqueo
+[00:45.22] Que no pare el bellaqueo
+[00:46.58] Que no pare el bellaqueo
+[00:48.27] Que no pare el bellaqueo
+[00:49.84] Ey, te miro a los ojo' y veo luce'
+[00:53.16] Maldito sea el hombre que te use
+[00:55.25] Tú-tú te mereces un cangri, tú no estás pa losers
+[00:58.34] Que te lleve pa la feria y te gane to los peluche'
+[01:01.20] Follow, follow, falo
+[01:02.66] Mira lo que caché en el cruce (pa'l cruce)
+[01:05.71] Flores, que la poli no me escuche
+[01:07.78] Tú tienes lo tuyo y eso hace que me enmuse
+[01:11.03] Te cargo to los paquete' si haces compra' en el super, ey
+[01:14.39] Tú tás adelantá, ey
+[01:15.92] Tesla Cyber Truck, ey
+[01:17.34] Tiene un par atrás, ey
+[01:18.92] Father con el Bo
+[01:20.32] Tú me tiene' dando vueltas, ya me siento Tony Hawk
+[01:23.16] Vestido de Christian Dior, yo le doy gracias a Dios
+[01:26.16] Yo te saco a pasear (te saco a pasear)
+[01:29.85] En un Banshee robao (en un Banshee robao)
+[01:32.71] Como OG Black, yeh
+[01:34.67] Como OG Black, yeh
+[01:35.92] Como OG Black
+[01:38.99] Hacemo' una porno (hacemo' una porno)
+[01:42.13] En la parte de atrá' (en la parte de atrá')
+[01:45.32] Como OG Black, yeh
+[01:46.97] Como OG Black, yeh
+[01:48.69] Como OG Black
+[01:50.90] ¿Qué, qué, qué?
+[01:52.01] Que no pare el bellaqueo
+[01:53.72] Que no pare el bellaqueo
+[01:55.42] Que no pare el bellaqueo
+[01:56.70] Que no pare el bellaqueo
+[01:58.29] Que no pare el bellaqueo
+[01:59.86] Que no pare el bellaqueo
+[02:01.36] Que no pare el bellaqueo
+[02:02.74] Que no-no-no (bellaqueo)
+[02:06.61] Bella-
+[02:10.17] Bellaqueo
+[02:12.61] Bella-
+[02:15.82] Bellaqueo
+[02:18.64] Bella-`;
 
-      { time: 113,   text: "Te cargo to los paquete' si haces compra' en el super" },
-      { time: 118,   text: "Tú tás adelantá" },
-      { time: 121,   text: "Tesla Cyber Truck" },
-      { time: 124,   text: "Tiene un par atrás" },
-      { time: 127,   text: "Father con el Bo" },
-      { time: 130,   text: "Tú me tiene' dando vueltas, ya me siento Tony Hawk" },
-      { time: 135,   text: "Vestido de Christian Dior, yo le doy gracias a Dios" },
+// PARSEAR LRC
+function parseLRC(lrc) {
+  return lrc.split('\n').map(line => {
+    const match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
+    if (!match) return null;
 
-      { time: 141,   text: "Yo te saco a pasear" },
-      { time: 145,   text: "En un Banshee robao" },
-      { time: 149,   text: "Como OG Black, yeh" },
-      { time: 152,   text: "Como OG Black, yeh" },
-      { time: 155,   text: "Como OG Black" },
-      { time: 159,   text: "Hacemo' una porno" },
-      { time: 163,   text: "En la parte de atrá'" },
-      { time: 167,   text: "Como OG Black, yeh" },
-      { time: 170,   text: "Como OG Black, yeh" },
-      { time: 173,   text: "Como OG Black" },
+    return {
+      time: parseInt(match[1]) * 60 + parseFloat(match[2]),
+      text: match[3].trim()
+    };
+  }).filter(Boolean);
+}
 
-      { time: 179,   text: "¿Qué, qué, qué?" },
-      { time: 182,   text: "Que no pare el bellaqueo" },
-      { time: 185,   text: "Que no pare el bellaqueo" },
-      { time: 188,   text: "Que no pare el bellaqueo" },
-      { time: 191,   text: "Que no pare el bellaqueo" },
-      { time: 194,   text: "Que no pare el bellaqueo" },
-      { time: 197,   text: "Que no pare el bellaqueo" },
-      { time: 200,   text: "Que no pare el bellaqueo" },
-      { time: 204,   text: "Que no-no-no (bellaqueo)" },
-      { time: 208,   text: "Bella-" },
-      { time: 210,   text: "Bellaqueo" },
-      { time: 212,   text: "Bella-" },
-      { time: 214,   text: "Bellaqueo" },
-      { time: 216,   text: "Bella-" }
-    ];
+const lyricsData = parseLRC(lrc);
 
-    // Crear líneas
-    function createLyrics() {
-      container.innerHTML = '';
-      lyricsData.forEach(() => {
-        const div = document.createElement('div');
-        div.className = 'lyric';
-        container.appendChild(div);
-      });
+// CREAR
+function createLyrics() {
+  container.innerHTML = '';
+  lyricsData.forEach(line => {
+    const div = document.createElement('div');
+    div.className = 'lyric';
+    div.textContent = line.text;
+    container.appendChild(div);
+  });
+}
+
+// UPDATE
+function updateLyrics(time) {
+  let index = 0;
+
+  for (let i = lyricsData.length - 1; i >= 0; i--) {
+    if (time >= lyricsData[i].time) {
+      index = i;
+      break;
     }
+  }
 
-    // Actualizar línea activa
-    function updateLyrics(currentTime) {
-      let activeIndex = -1;
-      for (let i = 0; i < lyricsData.length; i++) {
-        if (currentTime >= lyricsData[i].time && 
-            (i === lyricsData.length - 1 || currentTime < lyricsData[i + 1].time)) {
-          activeIndex = i;
-          break;
-        }
-      }
+  document.querySelectorAll('.lyric').forEach((line, i) => {
+    line.classList.toggle('active', i === index);
+  });
+}
 
-      const lines = container.querySelectorAll('.lyric');
-      lines.forEach((line, i) => {
-        if (i === activeIndex) {
-          line.textContent = lyricsData[i].text;
-          line.classList.add('active');
-        } else {
-          line.classList.remove('active');
-        }
-      });
-    }
+// LOOP SUAVE
+function loop() {
+  if (!audio.paused) {
+    updateLyrics(audio.currentTime);
+  }
+  requestAnimationFrame(loop);
+}
+loop();
 
-    // Controles
-    playBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        audio.play();
-        playBtn.textContent = '⏸';
-      } else {
-        audio.pause();
-        playBtn.textContent = '▶';
-      }
-    });
+// PLAY
+playBtn.onclick = () => {
+  if (audio.paused) {
+    audio.play();
+    playBtn.textContent = "Pause";
+  } else {
+    audio.pause();
+    playBtn.textContent = "Play";
+  }
+};
 
-    audio.addEventListener('timeupdate', () => {
-      updateLyrics(audio.currentTime);
-    });
+createLyrics();
+</script>
 
-    audio.addEventListener('ended', () => {
-      playBtn.textContent = '▶';
-    });
-
-    // Iniciar
-    createLyrics();
-  </script>
 </body>
 </html>
