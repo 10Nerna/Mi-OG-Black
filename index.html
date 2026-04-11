@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- 👀 PREVIEW DEL LINK -->
+<meta property="og:title" content="Mi OG Black 🎧">
+<meta property="og:description" content="Lyrics player con estilo OG 🔥">
+<meta property="og:image" content="https://10nerna.github.io/Mi-OG-Black/logo.jpg">
+<meta property="og:url" content="https://10nerna.github.io/Mi-OG-Black/">
+<meta property="og:type" content="website">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Mi OG Black 🎧">
+<meta name="twitter:description" content="Lyrics player con estilo OG 🔥">
+<meta name="twitter:image" content="https://10nerna.github.io/Mi-OG-Black/logo.jpg">
+
 <style>
 
 @font-face {
@@ -243,7 +255,7 @@ for (let i = 0; i < 3; i++) {
 
 let lastIndex = -1;
 
-/* 🔥 LYRICS +0.25s */
+/* SYNC */
 function updateLyrics() {
   const t = audio.currentTime + 0.25;
 
@@ -277,7 +289,7 @@ function updateLyrics() {
 
 audio.ontimeupdate = updateLyrics;
 
-/* ▶ START */
+/* START */
 let userStarted = false;
 
 playBtn.onclick = () => {
@@ -291,18 +303,16 @@ playBtn.onclick = () => {
   playBtn.style.pointerEvents = "none";
 };
 
-/* 💾 SAVE TIME */
+/* SAVE */
 function saveTime() {
   localStorage.setItem("audioTime", audio.currentTime);
 }
 
-/* 📵 PAUSE */
 function pauseAudio() {
   saveTime();
   audio.pause();
 }
 
-/* ▶ RESUME */
 function resumeAudio() {
   const saved = localStorage.getItem("audioTime");
 
@@ -312,20 +322,16 @@ function resumeAudio() {
   }
 }
 
-/* 👁 VISIBILITY CONTROL */
+/* TAB CONTROL */
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    pauseAudio();
-  } else {
-    resumeAudio();
-  }
+  if (document.hidden) pauseAudio();
+  else resumeAudio();
 });
 
-/* 🚪 CLOSE PAGE */
 window.addEventListener("pagehide", pauseAudio);
 window.addEventListener("beforeunload", pauseAudio);
 
-/* 💖 END */
+/* 💖 FINAL MESSAGE */
 audio.onended = () => {
   localStorage.removeItem("audioTime");
 
