@@ -160,7 +160,6 @@ const audio = document.getElementById('audio');
 const lyricsContainer = document.getElementById('lyrics');
 const playBtn = document.getElementById('playBtn');
 
-/* 💖 LYRICS COMPLETO */
 const lrc = `[00:11.70] Te saco a pasear
 [00:14.52] En un Banshee robao
 [00:18.13] Como OG Black
@@ -219,7 +218,6 @@ const lrc = `[00:11.70] Te saco a pasear
 [02:15.82] Bellaqueo
 [02:18.64] Bella-`;
 
-/* parser */
 function parseLRC(lrc) {
   return lrc.split("\n")
     .map(line => {
@@ -245,16 +243,20 @@ for (let i = 0; i < 3; i++) {
 
 let lastIndex = -1;
 
-/* sync */
+/* 🔥 LYRICS +0.25s */
 function updateLyrics() {
+  const t = audio.currentTime + 0.25;
+
   let index = 0;
 
-  for (let i = lyrics.length - 1; i >= 0; i--) {
-    if (audio.currentTime >= lyrics[i].time) {
-      index = i;
+  for (let i = 0; i < lyrics.length; i++) {
+    if (lyrics[i].time > t) {
+      index = i - 1;
       break;
     }
   }
+
+  if (index < 0) index = 0;
 
   const prev = lyrics[index - 1];
   const curr = lyrics[index];
@@ -275,15 +277,58 @@ function updateLyrics() {
 
 audio.ontimeupdate = updateLyrics;
 
-/* start */
+/* ▶ START */
+let userStarted = false;
+
 playBtn.onclick = () => {
   audio.play();
+  userStarted = true;
+
+  const saved = localStorage.getItem("audioTime");
+  if (saved) audio.currentTime = parseFloat(saved);
+
   playBtn.style.opacity = 0;
   playBtn.style.pointerEvents = "none";
 };
 
-/* final */
+/* 💾 SAVE TIME */
+function saveTime() {
+  localStorage.setItem("audioTime", audio.currentTime);
+}
+
+/* 📵 PAUSE */
+function pauseAudio() {
+  saveTime();
+  audio.pause();
+}
+
+/* ▶ RESUME */
+function resumeAudio() {
+  const saved = localStorage.getItem("audioTime");
+
+  if (userStarted && saved !== null) {
+    audio.currentTime = parseFloat(saved);
+    audio.play().catch(() => {});
+  }
+}
+
+/* 👁 VISIBILITY CONTROL */
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    pauseAudio();
+  } else {
+    resumeAudio();
+  }
+});
+
+/* 🚪 CLOSE PAGE */
+window.addEventListener("pagehide", pauseAudio);
+window.addEventListener("beforeunload", pauseAudio);
+
+/* 💖 END */
 audio.onended = () => {
+  localStorage.removeItem("audioTime");
+
   lyricsContainer.innerHTML = `
     <div style="
       color:white;
