@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- 💗 PREVIEW DEL LINK -->
-<meta property="og:title" content="Mi OG Black">
+<meta property="og:title" content="Mi OG Black 💘">
 <meta property="og:description" content="Te quiero, Sofía 💗">
 <meta property="og:image" content="https://10nerna.github.io/Mi-OG-Black/logo.jpg">
 <meta property="og:image:width" content="1200">
@@ -14,12 +14,12 @@
 <meta property="og:type" content="website">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Mi OG Black">
+<meta name="twitter:title" content="Mi OG Black 💘">
 <meta name="twitter:description" content="Te quiero, Sofía 💗">
 <meta name="twitter:image" content="https://10nerna.github.io/Mi-OG-Black/logo.jpg">
 
 <meta name="description" content="Te quiero, Sofía 💗">
-<meta name="theme-color" content="#ff4d6d">
+<meta name="theme-color" content="#000000">
 
 <style>
 
@@ -236,16 +236,14 @@ const lrc = `[00:11.70] Te saco a pasear
 [02:18.64] Bella-`;
 
 function parseLRC(lrc) {
-  return lrc.split("\n")
-    .map(line => {
-      const m = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
-      if (!m) return null;
-      return {
-        time: parseInt(m[1]) * 60 + parseFloat(m[2]),
-        text: m[3].trim()
-      };
-    })
-    .filter(Boolean);
+  return lrc.split("\n").map(line => {
+    const m = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
+    if (!m) return null;
+    return {
+      time: parseInt(m[1]) * 60 + parseFloat(m[2]),
+      text: m[3].trim()
+    };
+  }).filter(Boolean);
 }
 
 const lyrics = parseLRC(lrc);
@@ -260,12 +258,10 @@ for (let i = 0; i < 3; i++) {
 
 let lastIndex = -1;
 
-/* SYNC */
 function updateLyrics() {
   const t = audio.currentTime + 0.25;
 
   let index = 0;
-
   for (let i = 0; i < lyrics.length; i++) {
     if (lyrics[i].time > t) {
       index = i - 1;
@@ -279,9 +275,9 @@ function updateLyrics() {
   const curr = lyrics[index];
   const next = lyrics[index + 1];
 
-  lineElements[0].className = "line show prev";
+  lineElements[0].className = "line show";
   lineElements[1].className = "line show active";
-  lineElements[2].className = "line show next";
+  lineElements[2].className = "line show";
 
   lineElements[0].innerHTML = prev ? `<div class="main">${prev.text}</div>` : "";
   lineElements[2].innerHTML = next ? `<div class="main">${next.text}</div>` : "";
@@ -294,21 +290,25 @@ function updateLyrics() {
 
 audio.ontimeupdate = updateLyrics;
 
-/* START */
-let userStarted = false;
+let started = false;
 
 playBtn.onclick = () => {
-  audio.play();
-  userStarted = true;
+  started = true;
 
   const saved = localStorage.getItem("audioTime");
-  if (saved) audio.currentTime = parseFloat(saved);
+
+  if (!saved || audio.ended) {
+    audio.currentTime = 0;
+  } else {
+    audio.currentTime = parseFloat(saved);
+  }
+
+  audio.play();
 
   playBtn.style.opacity = 0;
   playBtn.style.pointerEvents = "none";
 };
 
-/* SAVE */
 function saveTime() {
   localStorage.setItem("audioTime", audio.currentTime);
 }
@@ -321,41 +321,33 @@ function pauseAudio() {
 function resumeAudio() {
   const saved = localStorage.getItem("audioTime");
 
-  if (userStarted && saved !== null) {
+  if (started && saved !== null) {
     audio.currentTime = parseFloat(saved);
     audio.play().catch(() => {});
   }
 }
 
-/* TAB CONTROL */
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) pauseAudio();
   else resumeAudio();
 });
 
-window.addEventListener("pagehide", pauseAudio);
 window.addEventListener("beforeunload", pauseAudio);
 
-/* 💖 FINAL MESSAGE */
 audio.onended = () => {
   localStorage.removeItem("audioTime");
+  started = false;
+
+  playBtn.style.opacity = 1;
+  playBtn.style.pointerEvents = "auto";
+  playBtn.innerText = "Repetir ❤️";
+
+  audio.currentTime = 0;
 
   lyricsContainer.innerHTML = `
-    <div style="
-      color:white;
-      text-align:center;
-      font-size:24px;
-      animation: fadeInLove 1.2s ease forwards;
-    ">
-      Te quiero muchísimo. 💖
+    <div style="color:white;text-align:center;font-size:24px;">
+      💖 Te quiero muchísimo
     </div>
-
-    <style>
-      @keyframes fadeInLove {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
-      }
-    </style>
   `;
 };
 
