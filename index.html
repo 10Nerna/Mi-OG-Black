@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <!-- saved from url=(0065)file:///C:/Users/Administrator/Desktop/OG%20Black/OG%20Black.html -->
-<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="es">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- 👀 PREVIEW DEL LINK -->
@@ -31,6 +32,7 @@ body {
   justify-content: center;
   align-items: center;
   background: black;
+  color: white;
 }
 
 /* FONDO */
@@ -70,25 +72,37 @@ body::after {
   max-width: 420px;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-bottom: 120px; /* espacio para el botón */
 }
 
 .lyrics {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding: 0 15px;
+  gap: 18px;
+  padding: 0 20px;
+  width: 100%;
+  flex: 1;
+  justify-content: center;
 }
 
-/* ANIMACIONES */
+/* ANIMACIONES INSPIRADAS EN EL VIDEO */
 .line {
   text-align: center;
   opacity: 0;
-  transform: translateY(25px) scale(0.92);
-  filter: blur(5px);
-  transition: all 0.5s ease;
+  transform: translateY(30px) scale(0.85);
+  filter: blur(6px);
+  will-change: transform, opacity, filter;
+  transition: 
+    opacity 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+    transform 0.55s cubic-bezier(0.23, 1, 0.32, 1),
+    filter 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+  font-size: clamp(15px, 4.8vw, 27px);
+  line-height: 1.35;
+  max-width: 100%;
 }
 
 .line.show {
@@ -98,39 +112,108 @@ body::after {
 }
 
 .line.active {
-  color: white;
-  transform: scale(1.15);
-  text-shadow: 0 0 15px rgba(255,255,255,0.5),
-               0 0 40px rgba(255,255,255,0.2);
+  color: #fff;
+  transform: scale(1.06);
+  filter: blur(0);
+  text-shadow: 
+    0 0 15px rgba(255,255,255,0.5),
+    0 0 30px rgba(255,255,255,0.25);
+  animation: activePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes activePop {
+  0%   { transform: scale(0.92); }
+  60%  { transform: scale(1.12); }
+  100% { transform: scale(1.06); }
 }
 
 .line.prev,
 .line.next {
   color: rgba(255,255,255,0.55);
-  transform: scale(0.95);
-  filter: blur(1px);
+  transform: scale(0.94);
+  filter: blur(2px);
+  opacity: 0.75;
 }
 
+/* Efecto typewriter */
 .main {
-  font-size: clamp(13px, 4.1vw, 26px);
+  display: inline-block;
+  position: relative;
+}
+
+.main::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: rgba(255,255,255,0.7);
+  animation: cursorBlink 0.8s step-end infinite;
+  opacity: 0.6;
+}
+
+@keyframes cursorBlink {
+  50% { opacity: 0; }
+}
+
+/* BARRA DE PROGRESO - Blanca y brillante */
+.progress-container {
+  width: 85%;
+  margin: 40px 0 30px 0;
+  position: relative;
+}
+
+.progress-bar {
+  height: 5px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(255,255,255,0.3);
+}
+
+.progress {
+  height: 100%;
+  background: linear-gradient(90deg, #ffffff, #f0f0f0);
+  width: 0%;
+  box-shadow: 
+    0 0 15px #ffffff,
+    0 0 30px rgba(255,255,255,0.6),
+    inset 0 0 8px rgba(255,255,255,0.8);
+  transition: width 0.1s linear;
+}
+
+.time {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  opacity: 0.7;
+  margin-top: 6px;
 }
 
 /* BOTÓN */
 button {
   position: fixed;
-  bottom: 25px;
+  bottom: 45px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 14px 22px;
-  border-radius: 999px;
+  padding: 14px 28px;
+  border-radius: 9999px;
   border: none;
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(14px);
+  background: rgba(255,255,255,0.13);
+  backdrop-filter: blur(16px);
   color: white;
-  font-size: 14px;
+  font-size: 15px;
   font-family: inherit;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.4),
-              inset 0 0 0 1px rgba(255,255,255,0.15);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45),
+              inset 0 0 0 1px rgba(255,255,255,0.18);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+button:hover {
+  background: rgba(255,255,255,0.22);
+  transform: translateX(-50%) scale(1.05);
 }
 </style>
 </head>
@@ -138,7 +221,23 @@ button {
 <body>
 
 <div class="container">
-  <div id="lyrics" class="lyrics"><div class="line"></div><div class="line"></div><div class="line"></div></div>
+  <div id="lyrics" class="lyrics">
+    <div class="line"><div class="main"></div></div>
+    <div class="line"><div class="main"></div></div>
+    <div class="line"><div class="main"></div></div>
+  </div>
+
+  <!-- Barra de progreso -->
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div id="progress" class="progress"></div>
+    </div>
+    <div class="time">
+      <span id="current-time">0:00</span>
+      <span id="duration">0:00</span>
+    </div>
+  </div>
+
   <button id="playBtn">Pulsa aquí ▶</button>
 </div>
 
@@ -148,8 +247,10 @@ button {
 const audio = document.getElementById('audio');
 const lyricsContainer = document.getElementById('lyrics');
 const playBtn = document.getElementById('playBtn');
+const progress = document.getElementById('progress');
+const currentTimeEl = document.getElementById('current-time');
+const durationEl = document.getElementById('duration');
 
-/* 🔥 TU LYRICS COMPLETO (ARREGLADO) */
 const lrc = `[00:11.70] Te saco a pasear
 [00:14.52] En un Banshee robao
 [00:18.13] Como OG Black
@@ -220,30 +321,38 @@ function parseLRC(lrc) {
 }
 
 const lyrics = parseLRC(lrc);
-
-const lineElements = [];
-for (let i = 0; i < 3; i++) {
-  const div = document.createElement("div");
-  div.className = "line";
-  lyricsContainer.appendChild(div);
-  lineElements.push(div);
-}
+const lineElements = Array.from(lyricsContainer.children);
 
 let lastIndex = -1;
+let swapTimer = null;
 
-function updateLyrics() {
-  const t = audio.currentTime + 0.25;
+function paintLine(el, text, role, delay = 0) {
+  el.style.transitionDelay = `${delay}ms`;
 
-  let index = 0;
-
-  for (let i = 0; i < lyrics.length; i++) {
-    if (lyrics[i].time > t) {
-      index = i - 1;
-      break;
-    }
+  if (text) {
+    el.querySelector('.main').textContent = text;
+  } else {
+    el.querySelector('.main').textContent = '';
   }
 
+  el.className = "line";
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      el.classList.add('show');
+      if (role === "active") el.classList.add('active');
+      else if (role === "prev") el.classList.add('prev');
+      else if (role === "next") el.classList.add('next');
+    });
+  });
+}
+
+function updateLyrics() {
+  const t = audio.currentTime + 0.22;
+
+  let index = lyrics.findIndex(l => l.time > t) - 1;
   if (index < 0) index = 0;
+  if (index >= lyrics.length) index = lyrics.length - 1;
 
   if (index === lastIndex) return;
   lastIndex = index;
@@ -252,38 +361,81 @@ function updateLyrics() {
   const curr = lyrics[index];
   const next = lyrics[index + 1];
 
-  lineElements[0].className = "line show prev";
-  lineElements[1].className = "line show active";
-  lineElements[2].className = "line show next";
+  clearTimeout(swapTimer);
 
-  lineElements[0].innerHTML = prev ? `<div class="main">${prev.text}</div>` : "";
-  lineElements[1].innerHTML = curr ? `<div class="main">${curr.text}</div>` : "";
-  lineElements[2].innerHTML = next ? `<div class="main">${next.text}</div>` : "";
+  swapTimer = setTimeout(() => {
+    paintLine(lineElements[0], prev ? prev.text : "", "prev");
+    paintLine(lineElements[1], curr ? curr.text : "", "active");
+    paintLine(lineElements[2], next ? next.text : "", "next", 80);
+  }, 40);
 }
 
-audio.ontimeupdate = updateLyrics;
+function updateProgress() {
+  if (!audio.duration) return;
+  const percent = (audio.currentTime / audio.duration) * 100;
+  progress.style.width = percent + '%';
 
-/* PLAY */
-playBtn.onclick = () => {
-  audio.play();
-  playBtn.style.display = "none";
+  currentTimeEl.textContent = formatTime(audio.currentTime);
+  durationEl.textContent = formatTime(audio.duration);
+}
+
+function formatTime(seconds) {
+  const min = Math.floor(seconds / 60);
+  const sec = Math.floor(seconds % 60);
+  return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+}
+
+// Eventos principales
+audio.ontimeupdate = () => {
+  updateLyrics();
+  updateProgress();
 };
 
-/* VISIBILITY */
+audio.onloadedmetadata = () => {
+  durationEl.textContent = formatTime(audio.duration);
+};
+
+playBtn.onclick = () => {
+  audio.play().then(() => {
+    playBtn.style.display = "none";
+  }).catch(() => {});
+};
+
+// Manejo de pestañas
+let wasPlaying = false;
+
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden) audio.pause();
-  else audio.play().catch(()=>{});
+  if (document.hidden) {
+    if (!audio.paused) {
+      wasPlaying = true;
+      audio.pause();
+    }
+  } else {
+    if (wasPlaying && audio.paused) {
+      audio.play().catch(() => {
+        playBtn.style.display = "block";
+        playBtn.textContent = "Toca para continuar ▶";
+      });
+    }
+  }
 });
 
-/* FINAL */
+document.addEventListener("click", () => {
+  if (wasPlaying && audio.paused) {
+    audio.play().then(() => {
+      if (playBtn.style.display !== "none") playBtn.style.display = "none";
+    }).catch(() => {});
+  }
+});
+
 audio.onended = () => {
   lyricsContainer.innerHTML = `
-    <div style="color:white;text-align:center;font-size:24px;">
-    Te quiero muchísimo. 💖
+    <div style="color:white;text-align:center;font-size:26px;opacity:0.95;">
+      Te quiero muchísimo, Sofía. 💖
     </div>
   `;
 };
 </script>
 
-
-</body></html>
+</body>
+</html>
