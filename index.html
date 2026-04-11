@@ -22,52 +22,33 @@ body {
   background: black;
 }
 
-/* 💥 FONDO SNOOPY CON ZOOM + PROFUNDIDAD */
+/* 💥 FONDO */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-
   background-image: url('fondo.jpg');
   background-repeat: repeat;
-
   background-size: 450px;
-
   opacity: 0.6;
   filter: contrast(1.3) brightness(0.9);
-
   transform: scale(1.35);
-
   animation: moveBg 25s ease-in-out infinite alternate;
-
   z-index: 0;
 }
 
 @keyframes moveBg {
-  0% {
-    background-position: 0 0;
-    transform: scale(1.32);
-  }
-  100% {
-    background-position: 220px 420px;
-    transform: scale(1.42);
-  }
+  0% { background-position: 0 0; transform: scale(1.32); }
+  100% { background-position: 220px 420px; transform: scale(1.42); }
 }
 
-/* 🌑 OVERLAY CINEMÁTICO */
+/* 🌑 OVERLAY */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
-
-  background: radial-gradient(
-    circle at center,
-    rgba(0,0,0,0.25),
-    rgba(0,0,0,0.88)
-  );
-
+  background: radial-gradient(circle at center, rgba(0,0,0,0.25), rgba(0,0,0,0.88));
   z-index: 1;
-  pointer-events: none;
 }
 
 /* 📦 CONTENEDOR */
@@ -90,6 +71,7 @@ body::after {
   padding: 0 15px;
 }
 
+/* ✨ ANIMACIONES */
 .line {
   text-align: center;
   opacity: 0;
@@ -112,25 +94,15 @@ body::after {
     0 0 40px rgba(255,255,255,0.2);
 }
 
-/* ✨ micro zoom suave SOLO texto central */
 .line.active .main {
-  display: inline-block;
   animation: softZoom 0.6s ease;
-  transform-origin: center;
+  display: inline-block;
 }
 
 @keyframes softZoom {
-  0% {
-    transform: scale(0.96);
-    opacity: 0.7;
-  }
-  45% {
-    transform: scale(1.03);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(0.96); opacity: 0.7; }
+  45% { transform: scale(1.03); opacity: 1; }
+  100% { transform: scale(1); }
 }
 
 .line.prev,
@@ -140,7 +112,7 @@ body::after {
   filter: blur(1px);
 }
 
-/* 📱 TEXTO RESPONSIVE (AJUSTADO PARA MOBILE) */
+/* 📱 TEXTO */
 .main {
   font-size: clamp(13px, 4.1vw, 26px);
   line-height: 1.2;
@@ -152,23 +124,18 @@ button {
   bottom: 25px;
   left: 50%;
   transform: translateX(-50%);
-
   padding: 14px 22px;
   border-radius: 999px;
-
   border: none;
   background: rgba(255,255,255,0.12);
   backdrop-filter: blur(14px);
-
   color: white;
   font-size: 14px;
   font-family: inherit;
-
-  box-shadow:
-    0 8px 25px rgba(0,0,0,0.4),
-    inset 0 0 0 1px rgba(255,255,255,0.15);
-
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4),
+              inset 0 0 0 1px rgba(255,255,255,0.15);
   z-index: 4;
+  transition: opacity 0.5s ease;
 }
 
 button:active {
@@ -185,7 +152,7 @@ button:active {
   <button id="playBtn">Pulsa aquí ▶</button>
 </div>
 
-<audio id="audio" src="OGBlack.MP3"></audio>
+<audio id="audio" src="OGBlack.MP3" preload="auto"></audio>
 
 <script>
 
@@ -193,6 +160,7 @@ const audio = document.getElementById('audio');
 const lyricsContainer = document.getElementById('lyrics');
 const playBtn = document.getElementById('playBtn');
 
+/* 💖 LYRICS COMPLETO */
 const lrc = `[00:11.70] Te saco a pasear
 [00:14.52] En un Banshee robao
 [00:18.13] Como OG Black
@@ -226,13 +194,13 @@ const lrc = `[00:11.70] Te saco a pasear
 [01:18.92] Father con el Bo
 [01:20.32] Tú me tiene' dando vueltas, ya me siento Tony Hawk
 [01:23.16] Vestido de Christian Dior, yo le doy gracias a Dios
-[01:26.16] Yo te saco a pasear (te saco a pasear)
-[01:29.85] En un Banshee robao (en un Banshee robao)
+[01:26.16] Yo te saco a pasear
+[01:29.85] En un Banshee robao
 [01:32.71] Como OG Black, yeh
 [01:34.67] Como OG Black, yeh
 [01:35.92] Como OG Black
-[01:38.99] Hacemo' una porno (hacemo' una porno)
-[01:42.13] En la parte de atrá' (en la parte de atrá')
+[01:38.99] Hacemo' una porno
+[01:42.13] En la parte de atrá'
 [01:45.32] Como OG Black, yeh
 [01:46.97] Como OG Black, yeh
 [01:48.69] Como OG Black
@@ -251,14 +219,18 @@ const lrc = `[00:11.70] Te saco a pasear
 [02:15.82] Bellaqueo
 [02:18.64] Bella-`;
 
+/* parser */
 function parseLRC(lrc) {
-  return lrc.split("\n").map(line => {
-    const m = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
-    return {
-      time: parseInt(m[1]) * 60 + parseFloat(m[2]),
-      text: m[3].trim()
-    };
-  });
+  return lrc.split("\n")
+    .map(line => {
+      const m = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
+      if (!m) return null;
+      return {
+        time: parseInt(m[1]) * 60 + parseFloat(m[2]),
+        text: m[3].trim()
+      };
+    })
+    .filter(Boolean);
 }
 
 const lyrics = parseLRC(lrc);
@@ -273,6 +245,7 @@ for (let i = 0; i < 3; i++) {
 
 let lastIndex = -1;
 
+/* sync */
 function updateLyrics() {
   let index = 0;
 
@@ -295,31 +268,39 @@ function updateLyrics() {
   lineElements[2].innerHTML = next ? `<div class="main">${next.text}</div>` : "";
 
   if (curr && index !== lastIndex) {
-    const el = lineElements[1].querySelector(".main");
-
     lineElements[1].innerHTML = `<div class="main">${curr.text}</div>`;
-
-    const newEl = lineElements[1].querySelector(".main");
-    newEl.style.animation = "none";
-    void newEl.offsetWidth;
-    newEl.style.animation = "";
-
     lastIndex = index;
   }
-
-  requestAnimationFrame(updateLyrics);
 }
 
-updateLyrics();
+audio.ontimeupdate = updateLyrics;
 
+/* start */
 playBtn.onclick = () => {
-  if (audio.paused) {
-    audio.play();
-    playBtn.textContent = "Pausar ❚❚";
-  } else {
-    audio.pause();
-    playBtn.textContent = "Pulsa aquí ▶";
-  }
+  audio.play();
+  playBtn.style.opacity = 0;
+  playBtn.style.pointerEvents = "none";
+};
+
+/* final */
+audio.onended = () => {
+  lyricsContainer.innerHTML = `
+    <div style="
+      color:white;
+      text-align:center;
+      font-size:24px;
+      animation: fadeInLove 1.2s ease forwards;
+    ">
+      💖 Te quiero muchísimo
+    </div>
+
+    <style>
+      @keyframes fadeInLove {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+      }
+    </style>
+  `;
 };
 
 </script>
