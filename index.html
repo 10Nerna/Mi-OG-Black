@@ -45,7 +45,7 @@ body::after {
   100% { transform: scale(1.1); }
 }
 
-/* 💖 PARTICULAS (NO EMOJIS) */
+/* 💖 PARTÍCULAS SUAVES */
 #hearts {
   position: fixed;
   inset: 0;
@@ -57,26 +57,20 @@ body::after {
 .heart {
   position: absolute;
   bottom: -50px;
-  width: 10px;
-  height: 10px;
-  background: rgba(255,255,255,0.9);
+  width: 6px;
+  height: 6px;
+  background: rgba(255,255,255,0.8);
   border-radius: 50%;
   filter: blur(2px);
-  box-shadow: 0 0 12px rgba(255,255,255,0.8);
+  box-shadow: 0 0 10px rgba(255,255,255,0.5);
   animation: floatUp linear forwards;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 @keyframes floatUp {
-  0% {
-    transform: translateY(0) scale(0.6);
-    opacity: 0;
-  }
-  20% { opacity: 0.8; }
-  100% {
-    transform: translateY(-110vh) scale(1.3);
-    opacity: 0;
-  }
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  20% { opacity: 0.7; }
+  100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
 }
 
 .container {
@@ -95,6 +89,7 @@ body::after {
   flex-direction: column;
   align-items: center;
   gap: 14px;
+  padding: 0 15px;
 }
 
 .line {
@@ -126,8 +121,15 @@ body::after {
   filter: blur(1px);
 }
 
-.main { font-size: 30px; }
-.sub { font-size: 16px; opacity: 0.65; }
+.main {
+  font-size: clamp(18px, 5vw, 30px);
+  line-height: 1.2;
+}
+
+.sub {
+  font-size: clamp(12px, 3.5vw, 16px);
+  opacity: 0.65;
+}
 
 @keyframes pop {
   0% { transform: scale(0.85); }
@@ -139,18 +141,36 @@ body::after {
   animation: pop 0.35s ease;
 }
 
+/* 💥 BOTÓN BONITO */
 button {
-  position: absolute;
-  bottom: 35px;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  padding: 14px 22px;
+  border-radius: 999px;
+
   border: none;
   background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
+
   color: white;
-  font-size: 22px;
-  z-index: 3;
+  font-size: 14px;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+
+  box-shadow:
+    0 8px 25px rgba(0,0,0,0.4),
+    inset 0 0 0 1px rgba(255,255,255,0.15);
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+button:active {
+  transform: translateX(-50%) scale(0.95);
 }
 
 </style>
@@ -163,7 +183,7 @@ button {
 
 <div class="container">
   <div id="lyrics" class="lyrics"></div>
-  <button id="playBtn">▶</button>
+  <button id="playBtn">Pulsa aquí ▶</button>
 </div>
 
 <audio id="audio" src="OGBlack.MP3"></audio>
@@ -175,25 +195,30 @@ const lyricsContainer = document.getElementById('lyrics');
 const playBtn = document.getElementById('playBtn');
 const hearts = document.getElementById('hearts');
 
-/* 💖 partículas suaves tipo luz */
+const isMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
+
+/* 💖 partículas optimizadas */
 function spawnHeart() {
   const heart = document.createElement("div");
   heart.className = "heart";
 
   heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = (4 + Math.random() * 4) + "s";
-  heart.style.width = (6 + Math.random() * 6) + "px";
-  heart.style.height = heart.style.width;
-  heart.style.opacity = Math.random() * 0.8 + 0.2;
+  heart.style.animationDuration = (5 + Math.random() * 3) + "s";
+
+  const size = isMobile ? 4 + Math.random() * 3 : 6 + Math.random() * 6;
+  heart.style.width = size + "px";
+  heart.style.height = size + "px";
+
+  heart.style.opacity = 0.3 + Math.random() * 0.5;
 
   hearts.appendChild(heart);
 
-  setTimeout(() => heart.remove(), 8000);
+  setTimeout(() => heart.remove(), 9000);
 }
 
-setInterval(spawnHeart, 180);
+setInterval(spawnHeart, isMobile ? 700 : 250);
 
-/* 🔥 LYRICS COMPLETO (NO TOCADO) */
+/* 🔥 LYRICS COMPLETO (INTACTO) */
 const lrc = `[00:11.70] Te saco a pasear
 [00:14.52] En un Banshee robao
 [00:18.13] Como OG Black
@@ -310,9 +335,15 @@ function updateLyrics() {
 
 updateLyrics();
 
+/* 🔘 botón play/pause perfecto */
 playBtn.onclick = () => {
-  audio.play();
-  playBtn.textContent = "❚❚";
+  if (audio.paused) {
+    audio.play();
+    playBtn.textContent = "Pausar ❚❚";
+  } else {
+    audio.pause();
+    playBtn.textContent = "Pulsa aquí ▶";
+  }
 };
 
 </script>
