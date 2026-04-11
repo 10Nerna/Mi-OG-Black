@@ -3,102 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OG Black</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
+
+@font-face {
+  font-family: 'CandyBeans';
+  src: url('./CandyBeans.otf') format('opentype');
+}
+
 body {
   margin: 0;
   height: 100vh;
-  background: #000;
-  color: #fff;
-  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  background: black;
+  font-family: 'CandyBeans', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* 🔥 FONDO */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url('fondo.jpg') center/cover no-repeat;
+  opacity: 0.65;
+  filter: contrast(1.15) brightness(0.85);
+  animation: zoomBg 30s ease-in-out infinite alternate;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9));
+}
+
+@keyframes zoomBg {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.1); }
+}
+
+/* 💖 PARTICULAS (NO EMOJIS) */
+#hearts {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.heart {
+  position: absolute;
+  bottom: -50px;
+  width: 10px;
+  height: 10px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 50%;
+  filter: blur(2px);
+  box-shadow: 0 0 12px rgba(255,255,255,0.8);
+  animation: floatUp linear forwards;
+  opacity: 0.8;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  20% { opacity: 0.8; }
+  100% {
+    transform: translateY(-110vh) scale(1.3);
+    opacity: 0;
+  }
+}
+
 .container {
+  position: relative;
+  z-index: 2;
   width: 100%;
   max-width: 420px;
   height: 100%;
   display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
-
-.lyrics-container {
-  flex: 1;
-  position: relative;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  text-align: center;
-}
-
-.lyric {
-  position: absolute;
-  width: 100%;
-  font-size: 26px;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.3s ease;
-}
-
-.lyric.active {
-  opacity: 1;
-  transform: translateY(0);
-  text-shadow: 0 0 20px rgba(255,255,255,0.4);
-}
-
-.info {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.controls {
-  display: flex;
   justify-content: center;
+}
+
+.lyrics {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.line {
+  text-align: center;
+  opacity: 0;
+  transform: translateY(25px) scale(0.92);
+  filter: blur(5px);
+  transition: all 0.5s ease;
+}
+
+.line.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+.line.active {
+  color: white;
+  transform: scale(1.15);
+  text-shadow:
+    0 0 15px rgba(255,255,255,0.5),
+    0 0 40px rgba(255,255,255,0.2);
+}
+
+.line.prev,
+.line.next {
+  color: rgba(255,255,255,0.55);
+  transform: scale(0.95);
+  filter: blur(1px);
+}
+
+.main { font-size: 30px; }
+.sub { font-size: 16px; opacity: 0.65; }
+
+@keyframes pop {
+  0% { transform: scale(0.85); }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.pop {
+  animation: pop 0.35s ease;
 }
 
 button {
+  position: absolute;
+  bottom: 35px;
   width: 70px;
   height: 70px;
   border-radius: 50%;
   border: none;
-  background: white;
-  color: black;
-  font-size: 16px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
+  color: white;
+  font-size: 22px;
+  z-index: 3;
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- 💖 partículas -->
+<div id="hearts"></div>
+
 <div class="container">
-
-  <div id="lyricsContainer" class="lyrics-container"></div>
-
-  <div class="info">
-    <h2>OG Black</h2>
-    <p>Álvaro Díaz & Randy</p>
-  </div>
-
-  <div class="controls">
-    <button id="playBtn">Play</button>
-  </div>
-
+  <div id="lyrics" class="lyrics"></div>
+  <button id="playBtn">▶</button>
 </div>
 
 <audio id="audio" src="OGBlack.MP3"></audio>
 
 <script>
-const audio = document.getElementById('audio');
-const playBtn = document.getElementById('playBtn');
-const container = document.getElementById('lyricsContainer');
 
-// 🔥 LRC SOLO CON TU LETRA
+const audio = document.getElementById('audio');
+const lyricsContainer = document.getElementById('lyrics');
+const playBtn = document.getElementById('playBtn');
+const hearts = document.getElementById('hearts');
+
+/* 💖 partículas suaves tipo luz */
+function spawnHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (4 + Math.random() * 4) + "s";
+  heart.style.width = (6 + Math.random() * 6) + "px";
+  heart.style.height = heart.style.width;
+  heart.style.opacity = Math.random() * 0.8 + 0.2;
+
+  hearts.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 8000);
+}
+
+setInterval(spawnHeart, 180);
+
+/* 🔥 LYRICS COMPLETO (NO TOCADO) */
 const lrc = `[00:11.70] Te saco a pasear
 [00:14.52] En un Banshee robao
 [00:18.13] Como OG Black
@@ -157,69 +252,69 @@ const lrc = `[00:11.70] Te saco a pasear
 [02:15.82] Bellaqueo
 [02:18.64] Bella-`;
 
-// PARSEAR LRC
 function parseLRC(lrc) {
-  return lrc.split('\n').map(line => {
-    const match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
-    if (!match) return null;
-
+  return lrc.split("\n").map(line => {
+    const m = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
     return {
-      time: parseInt(match[1]) * 60 + parseFloat(match[2]),
-      text: match[3].trim()
+      time: parseInt(m[1]) * 60 + parseFloat(m[2]),
+      text: m[3].trim()
     };
-  }).filter(Boolean);
-}
-
-const lyricsData = parseLRC(lrc);
-
-// CREAR
-function createLyrics() {
-  container.innerHTML = '';
-  lyricsData.forEach(line => {
-    const div = document.createElement('div');
-    div.className = 'lyric';
-    div.textContent = line.text;
-    container.appendChild(div);
   });
 }
 
-// UPDATE
-function updateLyrics(time) {
+const lyrics = parseLRC(lrc);
+
+const lineElements = [];
+for (let i = 0; i < 3; i++) {
+  const div = document.createElement("div");
+  div.className = "line";
+  lyricsContainer.appendChild(div);
+  lineElements.push(div);
+}
+
+let lastIndex = -1;
+
+function updateLyrics() {
   let index = 0;
 
-  for (let i = lyricsData.length - 1; i >= 0; i--) {
-    if (time >= lyricsData[i].time) {
+  for (let i = lyrics.length - 1; i >= 0; i--) {
+    if (audio.currentTime >= lyrics[i].time) {
       index = i;
       break;
     }
   }
 
-  document.querySelectorAll('.lyric').forEach((line, i) => {
-    line.classList.toggle('active', i === index);
-  });
-}
+  const prev = lyrics[index - 1];
+  const curr = lyrics[index];
+  const next = lyrics[index + 1];
 
-// LOOP SUAVE
-function loop() {
-  if (!audio.paused) {
-    updateLyrics(audio.currentTime);
+  lineElements[0].className = "line show prev";
+  lineElements[1].className = "line show active";
+  lineElements[2].className = "line show next";
+
+  lineElements[0].innerHTML = prev ? `<div class="main">${prev.text}</div>` : "";
+  lineElements[2].innerHTML = next ? `<div class="main">${next.text}</div>` : "";
+
+  if (curr && index !== lastIndex) {
+    lineElements[1].innerHTML = `<div class="main">${curr.text}</div>`;
+
+    lineElements[1].classList.remove("pop");
+    void lineElements[1].offsetWidth;
+    lineElements[1].classList.add("pop");
+
+    lastIndex = index;
   }
-  requestAnimationFrame(loop);
-}
-loop();
 
-// PLAY
+  requestAnimationFrame(updateLyrics);
+}
+
+updateLyrics();
+
 playBtn.onclick = () => {
-  if (audio.paused) {
-    audio.play();
-    playBtn.textContent = "Pause";
-  } else {
-    audio.pause();
-    playBtn.textContent = "Play";
-  }
+  audio.play();
+  playBtn.textContent = "❚❚";
 };
 
-createLyrics();
 </script>
 
 </body>
