@@ -30,12 +30,14 @@ body::before {
 
   background-image: url('fondo.jpg');
   background-repeat: repeat;
-  background-size: 280px; /* 👈 tamaño de cada Snoopy */
+
+  /* 👇 MÁS GRANDE para ver mejor los Snoopys */
+  background-size: 380px;
 
   opacity: 0.55;
   filter: contrast(1.25) brightness(0.85);
 
-  transform: scale(1.2);
+  transform: scale(1.25);
   animation: moveBg 40s linear infinite;
 
   z-index: 0;
@@ -60,34 +62,6 @@ body::after {
 
   z-index: 1;
   pointer-events: none;
-}
-
-/* 💖 PARTÍCULAS SUAVES */
-#hearts {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 2;
-}
-
-.heart {
-  position: absolute;
-  bottom: -50px;
-  width: 6px;
-  height: 6px;
-  background: rgba(255,255,255,0.8);
-  border-radius: 50%;
-  filter: blur(2px);
-  box-shadow: 0 0 10px rgba(255,255,255,0.5);
-  animation: floatUp linear forwards;
-  opacity: 0.6;
-}
-
-@keyframes floatUp {
-  0% { transform: translateY(0) scale(0.6); opacity: 0; }
-  20% { opacity: 0.7; }
-  100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
 }
 
 /* 📦 CONTENEDOR */
@@ -139,14 +113,14 @@ body::after {
   filter: blur(1px);
 }
 
-/* 📱 TEXTO RESPONSIVE */
+/* 📱 TEXTO RESPONSIVE (AJUSTADO) */
 .main {
-  font-size: clamp(18px, 5vw, 30px);
+  font-size: clamp(16px, 4.5vw, 28px);
   line-height: 1.2;
 }
 
 .sub {
-  font-size: clamp(12px, 3.5vw, 16px);
+  font-size: clamp(11px, 3.2vw, 15px);
   opacity: 0.65;
 }
 
@@ -184,9 +158,6 @@ button:active {
 
 <body>
 
-<!-- 💖 partículas -->
-<div id="hearts"></div>
-
 <div class="container">
   <div id="lyrics" class="lyrics"></div>
   <button id="playBtn">Pulsa aquí ▶</button>
@@ -199,30 +170,6 @@ button:active {
 const audio = document.getElementById('audio');
 const lyricsContainer = document.getElementById('lyrics');
 const playBtn = document.getElementById('playBtn');
-const hearts = document.getElementById('hearts');
-
-const isMobile = /iPhone|Android|iPad/i.test(navigator.userAgent);
-
-/* 💖 PARTÍCULAS OPTIMIZADAS */
-function spawnHeart() {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = (5 + Math.random() * 3) + "s";
-
-  const size = isMobile ? 4 + Math.random() * 3 : 6 + Math.random() * 6;
-  heart.style.width = size + "px";
-  heart.style.height = size + "px";
-
-  heart.style.opacity = 0.3 + Math.random() * 0.5;
-
-  hearts.appendChild(heart);
-
-  setTimeout(() => heart.remove(), 9000);
-}
-
-setInterval(spawnHeart, isMobile ? 700 : 250);
 
 /* 🔥 LYRICS COMPLETO (INTACTO) */
 const lrc = `[00:11.70] Te saco a pasear
