@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>OG Black - Álvaro Díaz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow: hidden;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 380px;
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .lyrics-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 28px;
+      text-align: center;
+    }
+
+    .lyric {
+      font-size: 28px;
+      line-height: 1.35;
+      font-weight: 300;
+      transition: all 0.85s cubic-bezier(0.23, 1, 0.32, 1);
+      opacity: 0.16;
+      transform: translateY(40px);
+    }
+
+    .lyric.active {
+      opacity: 1;
+      transform: translateY(0);
+      text-shadow: 0 0 40px rgba(255, 255, 255, 0.55);
+    }
+
+    .song-info {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .song-title {
+      font-size: 28px;
+      font-weight: 500;
+    }
+
+    .song-artist {
+      color: #888;
+      font-size: 17px;
+    }
+
+    #playBtn {
+      width: 72px;
+      height: 72px;
+      background: white;
+      color: black;
+      border-radius: 9999px;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      transition: all 0.2s;
+    }
+
+    #playBtn:active {
+      transform: scale(0.92);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="lyrics-container" id="lyricsContainer"></div>
+
+    <div class="song-info">
+      <div class="song-title">OG Black</div>
+      <div class="song-artist">Álvaro Díaz & Randy</div>
+    </div>
+
+    <div class="flex justify-center pb-10">
+      <button id="playBtn">▶</button>
+    </div>
+  </div>
+
+  <audio id="audio" src="OGBlack.MP3"></audio>
+
+  <script>
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+    const container = document.getElementById('lyricsContainer');
+
+    const lyricsData = [
+      { time: 11.23, text: "Te saco a pasear" },
+      { time: 15.0,  text: "En un Banshee robao" },
+      { time: 18.7,  text: "Como OG Black" },
+      { time: 21.4,  text: "Como OG Black" },
+      { time: 24.2,  text: "Como OG Black" },
+      { time: 28.0,  text: "Hacemo' una porno" },
+      { time: 31.7,  text: "En la parte de atrá'" },
+      { time: 35.4,  text: "Como OG Black" },
+      { time: 38.2,  text: "Como OG Black" },
+      { time: 41.0,  text: "Como OG Black" },
+      { time: 45.0,  text: "Que no pare el bellaqueo" },
+      { time: 48.0,  text: "Que no pare el bellaqueo" },
+      { time: 51.0,  text: "Que no pare el bellaqueo" },
+      { time: 54.0,  text: "Que no pare el bellaqueo" },
+      { time: 57.0,  text: "Que no pare el bellaqueo" },
+      { time: 60.0,  text: "Que no pare el bellaqueo" },
+      { time: 63.0,  text: "Que no pare el bellaqueo" },
+      { time: 66.0,  text: "Que no pare el bellaqueo" },
+
+      { time: 74.0,  text: "Ey, te miro a los ojo' y veo luce'" },
+      { time: 78.0,  text: "Maldito sea el hombre que te use" },
+      { time: 82.0,  text: "Tú-tú te mereces un cangri, tú no estás pa losers" },
+      { time: 88.0,  text: "Que te lleve pa la feria y te gane to los peluche'" },
+
+      { time: 95.0,  text: "Follow, follow, falo" },
+      { time: 98.0,  text: "Mira lo que caché en el cruce" },
+      { time: 102,   text: "Flores, que la poli no me escuche" },
+      { time: 106,   text: "Tú tienes lo tuyo y eso hace que me enmuse" },
+
+      { time: 113,   text: "Te cargo to los paquete' si haces compra' en el super" },
+      { time: 118,   text: "Tú tás adelantá" },
+      { time: 121,   text: "Tesla Cyber Truck" },
+      { time: 124,   text: "Tiene un par atrás" },
+      { time: 127,   text: "Father con el Bo" },
+      { time: 130,   text: "Tú me tiene' dando vueltas, ya me siento Tony Hawk" },
+      { time: 135,   text: "Vestido de Christian Dior, yo le doy gracias a Dios" },
+
+      { time: 141,   text: "Yo te saco a pasear" },
+      { time: 145,   text: "En un Banshee robao" },
+      { time: 149,   text: "Como OG Black, yeh" },
+      { time: 152,   text: "Como OG Black, yeh" },
+      { time: 155,   text: "Como OG Black" },
+      { time: 159,   text: "Hacemo' una porno" },
+      { time: 163,   text: "En la parte de atrá'" },
+      { time: 167,   text: "Como OG Black, yeh" },
+      { time: 170,   text: "Como OG Black, yeh" },
+      { time: 173,   text: "Como OG Black" },
+
+      { time: 179,   text: "¿Qué, qué, qué?" },
+      { time: 182,   text: "Que no pare el bellaqueo" },
+      { time: 185,   text: "Que no pare el bellaqueo" },
+      { time: 188,   text: "Que no pare el bellaqueo" },
+      { time: 191,   text: "Que no pare el bellaqueo" },
+      { time: 194,   text: "Que no pare el bellaqueo" },
+      { time: 197,   text: "Que no pare el bellaqueo" },
+      { time: 200,   text: "Que no pare el bellaqueo" },
+      { time: 204,   text: "Que no-no-no (bellaqueo)" },
+      { time: 208,   text: "Bella-" },
+      { time: 210,   text: "Bellaqueo" },
+      { time: 212,   text: "Bella-" },
+      { time: 214,   text: "Bellaqueo" },
+      { time: 216,   text: "Bella-" }
+    ];
+
+    // Crear líneas
+    function createLyrics() {
+      container.innerHTML = '';
+      lyricsData.forEach(() => {
+        const div = document.createElement('div');
+        div.className = 'lyric';
+        container.appendChild(div);
+      });
+    }
+
+    // Actualizar línea activa
+    function updateLyrics(currentTime) {
+      let activeIndex = -1;
+      for (let i = 0; i < lyricsData.length; i++) {
+        if (currentTime >= lyricsData[i].time && 
+            (i === lyricsData.length - 1 || currentTime < lyricsData[i + 1].time)) {
+          activeIndex = i;
+          break;
+        }
+      }
+
+      const lines = container.querySelectorAll('.lyric');
+      lines.forEach((line, i) => {
+        if (i === activeIndex) {
+          line.textContent = lyricsData[i].text;
+          line.classList.add('active');
+        } else {
+          line.classList.remove('active');
+        }
+      });
+    }
+
+    // Controles
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        playBtn.textContent = '⏸';
+      } else {
+        audio.pause();
+        playBtn.textContent = '▶';
+      }
+    });
+
+    audio.addEventListener('timeupdate', () => {
+      updateLyrics(audio.currentTime);
+    });
+
+    audio.addEventListener('ended', () => {
+      playBtn.textContent = '▶';
+    });
+
+    // Iniciar
+    createLyrics();
+  </script>
+</body>
+</html>
