@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Para Sofía</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: linear-gradient(to bottom, #000, #140a12);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .player {
+      width: 100%;
+      max-width: 380px;
+      background: #0a0a0a;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .cover {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+    }
+
+    .lyrics-container {
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+      margin-top: 15px;
+    }
+
+    .lyric-chain {
+      position: absolute;
+      width: 100%;
+      transition: transform .5s ease;
+      text-align: center;
+    }
+
+    .lyric-line {
+      padding: 6px 0;
+      font-size: 0.95rem;
+      opacity: 0.35;
+    }
+
+    .lyric-line.active {
+      opacity: 1;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #f9a8d4;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: #333;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #f472b6, #a855f7);
+      width: 0%;
+    }
+
+    button {
+      border: none;
+      background: none;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="player">
+
+  <!-- portada -->
+  <img src="logo.jpg" class="cover">
+
+  <div class="p-4 text-center">
+    <p class="text-pink-300 text-xs">Para ti</p>
+    <h1 class="text-xl font-semibold">Nuestra canción</h1>
+    <p class="text-gray-400 text-sm">Álvaro Díaz</p>
+
+    <p class="text-sm mt-3 text-gray-300">
+      Para Sofía: contigo todo se siente más bonito.
+    </p>
+
+    <audio id="audio" src="OGBlack.mp3"></audio>
+
+    <!-- barra -->
+    <div class="progress-bar mt-4" id="progressContainer">
+      <div id="progress" class="progress"></div>
+    </div>
+
+    <div class="flex justify-between text-xs text-gray-400 mt-1">
+      <span id="currentTime">0:00</span>
+      <span id="duration">0:00</span>
+    </div>
+
+    <!-- lyrics -->
+    <div id="lyricsContainer" class="lyrics-container"></div>
+
+    <!-- controles -->
+    <div class="flex justify-center items-center gap-8 mt-5">
+      <button onclick="back()"><i class="fas fa-backward"></i></button>
+
+      <button onclick="togglePlay()" class="text-3xl">
+        <i id="icon" class="fas fa-play"></i>
+      </button>
+
+      <button onclick="forward()"><i class="fas fa-forward"></i></button>
+    </div>
+  </div>
+</div>
+
+<script>
+const audio = document.getElementById("audio");
+const progress = document.getElementById("progress");
+const currentTimeEl = document.getElementById("currentTime");
+const durationEl = document.getElementById("duration");
+const lyricsContainer = document.getElementById("lyricsContainer");
+const icon = document.getElementById("icon");
+
+const lyrics = [
+  { time: 11.70, text: "Te saco a pasear" },
+  { time: 14.52, text: "En un Banshee robao" },
+  { time: 18.13, text: "Como OG Black" },
+  { time: 19.64, text: "Como OG Black" },
+  { time: 21.24, text: "Como OG Black" },
+  { time: 24.21, text: "Hacemo' una porno" },
+  { time: 26.96, text: "En la parte de atrá'" },
+  { time: 30.68, text: "Como OG Black" },
+  { time: 32.06, text: "Como OG Black" },
+  { time: 33.79, text: "Como OG Black" },
+  { time: 37.17, text: "Que no pare el bellaqueo" },
+  { time: 38.75, text: "Que no pare el bellaqueo" },
+  { time: 40.38, text: "Que no pare el bellaqueo" },
+  { time: 42.14, text: "Que no pare el bellaqueo" },
+  { time: 43.42, text: "Que no pare el bellaqueo" },
+  { time: 45.22, text: "Que no pare el bellaqueo" },
+  { time: 46.58, text: "Que no pare el bellaqueo" },
+  { time: 48.27, text: "Que no pare el bellaqueo" },
+  { time: 49.84, text: "Ey, te miro a los ojo' y veo luce'" },
+  { time: 53.16, text: "Maldito sea el hombre que te use" },
+  { time: 55.25, text: "Tú-tú te mereces un cangri, tú no estás pa losers" },
+  { time: 58.34, text: "Que te lleve pa la feria y te gane to los peluche'" },
+  { time: 61.20, text: "Follow, follow, falo" },
+  { time: 62.66, text: "Mira lo que caché en el cruce (pa'l cruce)" },
+  { time: 65.71, text: "Flores, que la poli no me escuche" },
+  { time: 67.78, text: "Tú tienes lo tuyo y eso hace que me enmuse" },
+  { time: 71.03, text: "Te cargo to los paquete' si haces compra' en el super, ey" },
+  { time: 74.39, text: "Tú tás adelantá, ey" },
+  { time: 75.92, text: "Tesla Cyber Truck, ey" },
+  { time: 77.34, text: "Tiene un par atrás, ey" },
+  { time: 78.92, text: "Father con el Bo" },
+  { time: 80.32, text: "Tú me tiene' dando vueltas, ya me siento Tony Hawk" },
+  { time: 83.16, text: "Vestido de Christian Dior, yo le doy gracias a Dios" },
+  { time: 86.16, text: "Yo te saco a pasear (te saco a pasear)" },
+  { time: 89.85, text: "En un Banshee robao (en un Banshee robao)" },
+  { time: 92.71, text: "Como OG Black, yeh" },
+  { time: 94.67, text: "Como OG Black, yeh" },
+  { time: 95.92, text: "Como OG Black" },
+  { time: 98.99, text: "Hacemo' una porno (hacemo' una porno)" },
+  { time: 102.13, text: "En la parte de atrá' (en la parte de atrá')" },
+  { time: 105.32, text: "Como OG Black, yeh" },
+  { time: 106.97, text: "Como OG Black, yeh" },
+  { time: 108.69, text: "Como OG Black" },
+  { time: 110.90, text: "¿Qué, qué, qué?" },
+  { time: 112.01, text: "Que no pare el bellaqueo" },
+  { time: 113.72, text: "Que no pare el bellaqueo" },
+  { time: 115.42, text: "Que no pare el bellaqueo" },
+  { time: 116.70, text: "Que no pare el bellaqueo" },
+  { time: 118.29, text: "Que no pare el bellaqueo" },
+  { time: 119.86, text: "Que no pare el bellaqueo" },
+  { time: 121.36, text: "Que no pare el bellaqueo" },
+  { time: 122.74, text: "Que no-no-no (bellaqueo)" },
+  { time: 126.61, text: "Bella-" },
+  { time: 130.17, text: "Bellaqueo" },
+  { time: 132.61, text: "Bella-" },
+  { time: 135.82, text: "Bellaqueo" },
+  { time: 138.64, text: "Bella-" }
+];
+
+let current = -1;
+let chain;
+
+function renderLyrics() {
+  chain = document.createElement("div");
+  chain.className = "lyric-chain";
+
+  lyrics.forEach(l => {
+    const d = document.createElement("div");
+    d.className = "lyric-line";
+    d.textContent = l.text;
+    chain.appendChild(d);
+  });
+
+  lyricsContainer.appendChild(chain);
+}
+
+function updateLyrics() {
+  let index = -1;
+
+  for (let i = 0; i < lyrics.length; i++) {
+    if (audio.currentTime >= lyrics[i].time) index = i;
+  }
+
+  if (index === current) return;
+  current = index;
+
+  const lines = chain.children;
+
+  for (let i = 0; i < lines.length; i++) {
+    lines[i].classList.toggle("active", i === index);
+  }
+
+  chain.style.transform = `translateY(${-index * 32}px)`;
+}
+
+function togglePlay() {
+  if (audio.paused) {
+    audio.play();
+    icon.className = "fas fa-pause";
+  } else {
+    audio.pause();
+    icon.className = "fas fa-play";
+  }
+}
+
+function back() {
+  audio.currentTime -= 10;
+}
+
+function forward() {
+  audio.currentTime += 10;
+}
+
+function format(t) {
+  let m = Math.floor(t / 60);
+  let s = Math.floor(t % 60);
+  return `${m}:${s < 10 ? "0" : ""}${s}`;
+}
+
+audio.ontimeupdate = () => {
+  progress.style.width = (audio.currentTime / audio.duration) * 100 + "%";
+  currentTimeEl.textContent = format(audio.currentTime);
+  updateLyrics();
+};
+
+audio.onloadedmetadata = () => {
+  durationEl.textContent = format(audio.duration);
+};
+
+document.getElementById("progressContainer").onclick = (e) => {
+  const rect = e.target.getBoundingClientRect();
+  const percent = (e.clientX - rect.left) / rect.width;
+  audio.currentTime = percent * audio.duration;
+};
+
+renderLyrics();
+</script>
+
+</body>
+</html>
