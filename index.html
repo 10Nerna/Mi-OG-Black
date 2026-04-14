@@ -1,440 +1,279 @@
 <!DOCTYPE html>
-<!-- saved from url=(0065)file:///C:/Users/Administrator/Desktop/OG%20Black/OG%20Black.html -->
 <html lang="es">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Para Sofía</title>
 
-<!-- 👀 PREVIEW DEL LINK -->
-<meta property="og:title" content="Mi OG Black 💗">
-<meta property="og:description" content="Te quiero, Sofía.">
-<meta property="og:image" content="https://10nerna.github.io/Mi-OG-Black/logo.jpg">
-<meta property="og:url" content="https://10nerna.github.io/Mi-OG-Black/">
-<meta property="og:type" content="website">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
 
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Mi OG Black 💗">
-<meta name="twitter:description" content="Te quiero, Sofía.">
-<meta name="twitter:image" content="https://10nerna.github.io/Mi-OG-Black/logo.jpg">
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: linear-gradient(to bottom, #000, #140a12);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-<style>
-@font-face {
-  font-family: 'CandyBeans';
-  src: url('./CandyBeans.otf') format('opentype');
-}
+    .player {
+      width: 100%;
+      max-width: 380px;
+      background: #0a0a0a;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.08);
+    }
 
-body {
-  margin: 0;
-  height: 100vh;
-  overflow: hidden;
-  font-family: 'CandyBeans', sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: black;
-  color: white;
-}
+    .cover {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+    }
 
-/* FONDO */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: url('fondo.jpg');
-  background-repeat: repeat;
-  background-size: 450px;
-  opacity: 0.6;
-  filter: contrast(1.3) brightness(0.9);
-  transform: scale(1.35);
-  animation: moveBg 25s ease-in-out infinite alternate;
-  z-index: 0;
-}
+    .lyrics-container {
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+      margin-top: 15px;
+    }
 
-@keyframes moveBg {
-  0% { background-position: 0 0; transform: scale(1.32); }
-  100% { background-position: 220px 420px; transform: scale(1.42); }
-}
+    .lyric-chain {
+      position: absolute;
+      width: 100%;
+      transition: transform .5s ease;
+      text-align: center;
+    }
 
-/* OVERLAY */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(0,0,0,0.25), rgba(0,0,0,0.88));
-  z-index: 1;
-}
+    .lyric-line {
+      padding: 6px 0;
+      font-size: 0.95rem;
+      opacity: 0.35;
+    }
 
-/* CONTENEDOR */
-.container {
-  position: relative;
-  z-index: 3;
-  width: 100%;
-  max-width: 420px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 120px; /* espacio para el botón */
-}
+    .lyric-line.active {
+      opacity: 1;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #f9a8d4;
+    }
 
-.lyrics {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
-  padding: 0 20px;
-  width: 100%;
-  flex: 1;
-  justify-content: center;
-}
+    .progress-bar {
+      height: 4px;
+      background: #333;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+    }
 
-/* ANIMACIONES INSPIRADAS EN EL VIDEO */
-.line {
-  text-align: center;
-  opacity: 0;
-  transform: translateY(30px) scale(0.85);
-  filter: blur(6px);
-  will-change: transform, opacity, filter;
-  transition: 
-    opacity 0.45s cubic-bezier(0.23, 1, 0.32, 1),
-    transform 0.55s cubic-bezier(0.23, 1, 0.32, 1),
-    filter 0.55s cubic-bezier(0.23, 1, 0.32, 1);
-  font-size: clamp(15px, 4.8vw, 27px);
-  line-height: 1.35;
-  max-width: 100%;
-}
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #f472b6, #a855f7);
+      width: 0%;
+    }
 
-.line.show {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  filter: blur(0);
-}
-
-.line.active {
-  color: #fff;
-  transform: scale(1.06);
-  filter: blur(0);
-  text-shadow: 
-    0 0 15px rgba(255,255,255,0.5),
-    0 0 30px rgba(255,255,255,0.25);
-  animation: activePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-}
-
-@keyframes activePop {
-  0%   { transform: scale(0.92); }
-  60%  { transform: scale(1.12); }
-  100% { transform: scale(1.06); }
-}
-
-.line.prev,
-.line.next {
-  color: rgba(255,255,255,0.55);
-  transform: scale(0.94);
-  filter: blur(2px);
-  opacity: 0.75;
-}
-
-/* Efecto typewriter */
-.main {
-  display: inline-block;
-  position: relative;
-}
-
-.main::after {
-  content: '';
-  position: absolute;
-  right: -4px;
-  top: 0;
-  height: 100%;
-  width: 3px;
-  background: rgba(255,255,255,0.7);
-  animation: cursorBlink 0.8s step-end infinite;
-  opacity: 0.6;
-}
-
-@keyframes cursorBlink {
-  50% { opacity: 0; }
-}
-
-/* BARRA DE PROGRESO - Blanca y brillante */
-.progress-container {
-  width: 85%;
-  margin: 40px 0 30px 0;
-  position: relative;
-}
-
-.progress-bar {
-  height: 5px;
-  background: rgba(255,255,255,0.25);
-  border-radius: 999px;
-  overflow: hidden;
-  box-shadow: 0 0 8px rgba(255,255,255,0.3);
-}
-
-.progress {
-  height: 100%;
-  background: linear-gradient(90deg, #ffffff, #f0f0f0);
-  width: 0%;
-  box-shadow: 
-    0 0 15px #ffffff,
-    0 0 30px rgba(255,255,255,0.6),
-    inset 0 0 8px rgba(255,255,255,0.8);
-  transition: width 0.1s linear;
-}
-
-.time {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  opacity: 0.7;
-  margin-top: 6px;
-}
-
-/* BOTÓN */
-button {
-  position: fixed;
-  bottom: 45px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 14px 28px;
-  border-radius: 9999px;
-  border: none;
-  background: rgba(255,255,255,0.13);
-  backdrop-filter: blur(16px);
-  color: white;
-  font-size: 15px;
-  font-family: inherit;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.45),
-              inset 0 0 0 1px rgba(255,255,255,0.18);
-  transition: all 0.3s ease;
-  z-index: 10;
-}
-
-button:hover {
-  background: rgba(255,255,255,0.22);
-  transform: translateX(-50%) scale(1.05);
-}
-</style>
+    button {
+      border: none;
+      background: none;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
-  <div id="lyrics" class="lyrics">
-    <div class="line"><div class="main"></div></div>
-    <div class="line"><div class="main"></div></div>
-    <div class="line"><div class="main"></div></div>
-  </div>
+<div class="player">
 
-  <!-- Barra de progreso -->
-  <div class="progress-container">
-    <div class="progress-bar">
+  <!-- portada -->
+  <img src="logo.jpg" class="cover">
+
+  <div class="p-4 text-center">
+    <p class="text-pink-300 text-xs">Para ti</p>
+    <h1 class="text-xl font-semibold">Nuestra canción</h1>
+    <p class="text-gray-400 text-sm">Álvaro Díaz</p>
+
+    <p class="text-sm mt-3 text-gray-300">
+      Para Sofía: contigo todo se siente más bonito.
+    </p>
+
+    <audio id="audio" src="OGBlack.mp3"></audio>
+
+    <!-- barra -->
+    <div class="progress-bar mt-4" id="progressContainer">
       <div id="progress" class="progress"></div>
     </div>
-    <div class="time">
-      <span id="current-time">0:00</span>
+
+    <div class="flex justify-between text-xs text-gray-400 mt-1">
+      <span id="currentTime">0:00</span>
       <span id="duration">0:00</span>
     </div>
-  </div>
 
-  <button id="playBtn">Pulsa aquí ▶</button>
+    <!-- lyrics -->
+    <div id="lyricsContainer" class="lyrics-container"></div>
+
+    <!-- controles -->
+    <div class="flex justify-center items-center gap-8 mt-5">
+      <button onclick="back()"><i class="fas fa-backward"></i></button>
+
+      <button onclick="togglePlay()" class="text-3xl">
+        <i id="icon" class="fas fa-play"></i>
+      </button>
+
+      <button onclick="forward()"><i class="fas fa-forward"></i></button>
+    </div>
+  </div>
 </div>
 
-<audio id="audio" src="OGBlack.MP3" preload="auto"></audio>
-
 <script>
-const audio = document.getElementById('audio');
-const lyricsContainer = document.getElementById('lyrics');
-const playBtn = document.getElementById('playBtn');
-const progress = document.getElementById('progress');
-const currentTimeEl = document.getElementById('current-time');
-const durationEl = document.getElementById('duration');
+const audio = document.getElementById("audio");
+const progress = document.getElementById("progress");
+const currentTimeEl = document.getElementById("currentTime");
+const durationEl = document.getElementById("duration");
+const lyricsContainer = document.getElementById("lyricsContainer");
+const icon = document.getElementById("icon");
 
-const lrc = `[00:11.70] Te saco a pasear
-[00:14.52] En un Banshee robao
-[00:18.13] Como OG Black
-[00:19.64] Como OG Black
-[00:21.24] Como OG Black
-[00:24.21] Hacemo' una porno
-[00:26.96] En la parte de atrá'
-[00:30.68] Como OG Black
-[00:32.06] Como OG Black
-[00:33.79] Como OG Black
-[00:37.17] Que no pare el bellaqueo
-[00:38.75] Que no pare el bellaqueo
-[00:40.38] Que no pare el bellaqueo
-[00:42.14] Que no pare el bellaqueo
-[00:43.42] Que no pare el bellaqueo
-[00:45.22] Que no pare el bellaqueo
-[00:46.58] Que no pare el bellaqueo
-[00:48.27] Que no pare el bellaqueo
-[00:49.84] Ey, te miro a los ojo' y veo luce'
-[00:53.16] Maldito sea el hombre que te use
-[00:55.25] Tú-tú te mereces un cangri, tú no estás pa losers
-[00:58.34] Que te lleve pa la feria y te gane to los peluche'
-[01:01.20] Follow, follow, falo
-[01:02.66] Mira lo que caché en el cruce (pa'l cruce)
-[01:05.71] Flores, que la poli no me escuche
-[01:07.78] Tú tienes lo tuyo y eso hace que me enmuse
-[01:11.03] Te cargo to los paquete' si haces compra' en el super, ey
-[01:14.39] Tú tás adelantá, ey
-[01:15.92] Tesla Cyber Truck, ey
-[01:17.34] Tiene un par atrás, ey
-[01:18.92] Father con el Bo
-[01:20.32] Tú me tiene' dando vueltas, ya me siento Tony Hawk
-[01:23.16] Vestido de Christian Dior, yo le doy gracias a Dios
-[01:26.16] Yo te saco a pasear
-[01:29.85] En un Banshee robao
-[01:32.71] Como OG Black, yeh
-[01:34.67] Como OG Black, yeh
-[01:35.92] Como OG Black
-[01:38.99] Hacemo' una porno
-[01:42.13] En la parte de atrá'
-[01:45.32] Como OG Black, yeh
-[01:46.97] Como OG Black, yeh
-[01:48.69] Como OG Black
-[01:50.90] ¿Qué, qué, qué?
-[01:52.01] Que no pare el bellaqueo
-[01:53.72] Que no pare el bellaqueo
-[01:55.42] Que no pare el bellaqueo
-[01:56.70] Que no pare el bellaqueo
-[01:58.29] Que no pare el bellaqueo
-[01:59.86] Que no pare el bellaqueo
-[02:01.36] Que no pare el bellaqueo
-[02:02.74] Que no-no-no (bellaqueo)
-[02:06.61] Bella-
-[02:10.17] Bellaqueo
-[02:12.61] Bella-
-[02:15.82] Bellaqueo
-[02:18.64] Bella-`;
+const lyrics = [
+  { time: 11.70, text: "Te saco a pasear" },
+  { time: 14.52, text: "En un Banshee robao" },
+  { time: 18.13, text: "Como OG Black" },
+  { time: 19.64, text: "Como OG Black" },
+  { time: 21.24, text: "Como OG Black" },
+  { time: 24.21, text: "Hacemo' una porno" },
+  { time: 26.96, text: "En la parte de atrá'" },
+  { time: 30.68, text: "Como OG Black" },
+  { time: 32.06, text: "Como OG Black" },
+  { time: 33.79, text: "Como OG Black" },
+  { time: 37.17, text: "Que no pare el bellaqueo" },
+  { time: 38.75, text: "Que no pare el bellaqueo" },
+  { time: 40.38, text: "Que no pare el bellaqueo" },
+  { time: 42.14, text: "Que no pare el bellaqueo" },
+  { time: 43.42, text: "Que no pare el bellaqueo" },
+  { time: 45.22, text: "Que no pare el bellaqueo" },
+  { time: 46.58, text: "Que no pare el bellaqueo" },
+  { time: 48.27, text: "Que no pare el bellaqueo" },
+  { time: 49.84, text: "Ey, te miro a los ojo' y veo luce'" },
+  { time: 53.16, text: "Maldito sea el hombre que te use" },
+  { time: 55.25, text: "Tú-tú te mereces un cangri, tú no estás pa losers" },
+  { time: 58.34, text: "Que te lleve pa la feria y te gane to los peluche'" },
+  { time: 61.20, text: "Follow, follow, falo" },
+  { time: 62.66, text: "Mira lo que caché en el cruce (pa'l cruce)" },
+  { time: 65.71, text: "Flores, que la poli no me escuche" },
+  { time: 67.78, text: "Tú tienes lo tuyo y eso hace que me enmuse" },
+  { time: 71.03, text: "Te cargo to los paquete' si haces compra' en el super, ey" },
+  { time: 74.39, text: "Tú tás adelantá, ey" },
+  { time: 75.92, text: "Tesla Cyber Truck, ey" },
+  { time: 77.34, text: "Tiene un par atrás, ey" },
+  { time: 78.92, text: "Father con el Bo" },
+  { time: 80.32, text: "Tú me tiene' dando vueltas, ya me siento Tony Hawk" },
+  { time: 83.16, text: "Vestido de Christian Dior, yo le doy gracias a Dios" },
+  { time: 86.16, text: "Yo te saco a pasear (te saco a pasear)" },
+  { time: 89.85, text: "En un Banshee robao (en un Banshee robao)" },
+  { time: 92.71, text: "Como OG Black, yeh" },
+  { time: 94.67, text: "Como OG Black, yeh" },
+  { time: 95.92, text: "Como OG Black" },
+  { time: 98.99, text: "Hacemo' una porno (hacemo' una porno)" },
+  { time: 102.13, text: "En la parte de atrá' (en la parte de atrá')" },
+  { time: 105.32, text: "Como OG Black, yeh" },
+  { time: 106.97, text: "Como OG Black, yeh" },
+  { time: 108.69, text: "Como OG Black" },
+  { time: 110.90, text: "¿Qué, qué, qué?" },
+  { time: 112.01, text: "Que no pare el bellaqueo" },
+  { time: 113.72, text: "Que no pare el bellaqueo" },
+  { time: 115.42, text: "Que no pare el bellaqueo" },
+  { time: 116.70, text: "Que no pare el bellaqueo" },
+  { time: 118.29, text: "Que no pare el bellaqueo" },
+  { time: 119.86, text: "Que no pare el bellaqueo" },
+  { time: 121.36, text: "Que no pare el bellaqueo" },
+  { time: 122.74, text: "Que no-no-no (bellaqueo)" },
+  { time: 126.61, text: "Bella-" },
+  { time: 130.17, text: "Bellaqueo" },
+  { time: 132.61, text: "Bella-" },
+  { time: 135.82, text: "Bellaqueo" },
+  { time: 138.64, text: "Bella-" }
+];
 
-function parseLRC(lrc) {
-  return lrc.split("\n").map(line => {
-    const m = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
-    if (!m) return null;
-    return {
-      time: parseInt(m[1]) * 60 + parseFloat(m[2]),
-      text: m[3].trim()
-    };
-  }).filter(Boolean);
-}
+let current = -1;
+let chain;
 
-const lyrics = parseLRC(lrc);
-const lineElements = Array.from(lyricsContainer.children);
+function renderLyrics() {
+  chain = document.createElement("div");
+  chain.className = "lyric-chain";
 
-let lastIndex = -1;
-let swapTimer = null;
-
-function paintLine(el, text, role, delay = 0) {
-  el.style.transitionDelay = `${delay}ms`;
-
-  if (text) {
-    el.querySelector('.main').textContent = text;
-  } else {
-    el.querySelector('.main').textContent = '';
-  }
-
-  el.className = "line";
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      el.classList.add('show');
-      if (role === "active") el.classList.add('active');
-      else if (role === "prev") el.classList.add('prev');
-      else if (role === "next") el.classList.add('next');
-    });
+  lyrics.forEach(l => {
+    const d = document.createElement("div");
+    d.className = "lyric-line";
+    d.textContent = l.text;
+    chain.appendChild(d);
   });
+
+  lyricsContainer.appendChild(chain);
 }
 
 function updateLyrics() {
-  const t = audio.currentTime + 0.22;
+  let index = -1;
 
-  let index = lyrics.findIndex(l => l.time > t) - 1;
-  if (index < 0) index = 0;
-  if (index >= lyrics.length) index = lyrics.length - 1;
+  for (let i = 0; i < lyrics.length; i++) {
+    if (audio.currentTime >= lyrics[i].time) index = i;
+  }
 
-  if (index === lastIndex) return;
-  lastIndex = index;
+  if (index === current) return;
+  current = index;
 
-  const prev = lyrics[index - 1];
-  const curr = lyrics[index];
-  const next = lyrics[index + 1];
+  const lines = chain.children;
 
-  clearTimeout(swapTimer);
+  for (let i = 0; i < lines.length; i++) {
+    lines[i].classList.toggle("active", i === index);
+  }
 
-  swapTimer = setTimeout(() => {
-    paintLine(lineElements[0], prev ? prev.text : "", "prev");
-    paintLine(lineElements[1], curr ? curr.text : "", "active");
-    paintLine(lineElements[2], next ? next.text : "", "next", 80);
-  }, 40);
+  chain.style.transform = `translateY(${-index * 32}px)`;
 }
 
-function updateProgress() {
-  if (!audio.duration) return;
-  const percent = (audio.currentTime / audio.duration) * 100;
-  progress.style.width = percent + '%';
-
-  currentTimeEl.textContent = formatTime(audio.currentTime);
-  durationEl.textContent = formatTime(audio.duration);
+function togglePlay() {
+  if (audio.paused) {
+    audio.play();
+    icon.className = "fas fa-pause";
+  } else {
+    audio.pause();
+    icon.className = "fas fa-play";
+  }
 }
 
-function formatTime(seconds) {
-  const min = Math.floor(seconds / 60);
-  const sec = Math.floor(seconds % 60);
-  return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+function back() {
+  audio.currentTime -= 10;
 }
 
-// Eventos principales
+function forward() {
+  audio.currentTime += 10;
+}
+
+function format(t) {
+  let m = Math.floor(t / 60);
+  let s = Math.floor(t % 60);
+  return `${m}:${s < 10 ? "0" : ""}${s}`;
+}
+
 audio.ontimeupdate = () => {
+  progress.style.width = (audio.currentTime / audio.duration) * 100 + "%";
+  currentTimeEl.textContent = format(audio.currentTime);
   updateLyrics();
-  updateProgress();
 };
 
 audio.onloadedmetadata = () => {
-  durationEl.textContent = formatTime(audio.duration);
+  durationEl.textContent = format(audio.duration);
 };
 
-playBtn.onclick = () => {
-  audio.play().then(() => {
-    playBtn.style.display = "none";
-  }).catch(() => {});
+document.getElementById("progressContainer").onclick = (e) => {
+  const rect = e.target.getBoundingClientRect();
+  const percent = (e.clientX - rect.left) / rect.width;
+  audio.currentTime = percent * audio.duration;
 };
 
-// Manejo de pestañas
-let wasPlaying = false;
-
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    if (!audio.paused) {
-      wasPlaying = true;
-      audio.pause();
-    }
-  } else {
-    if (wasPlaying && audio.paused) {
-      audio.play().catch(() => {
-        playBtn.style.display = "block";
-        playBtn.textContent = "Toca para continuar ▶";
-      });
-    }
-  }
-});
-
-document.addEventListener("click", () => {
-  if (wasPlaying && audio.paused) {
-    audio.play().then(() => {
-      if (playBtn.style.display !== "none") playBtn.style.display = "none";
-    }).catch(() => {});
-  }
-});
-
-audio.onended = () => {
-  lyricsContainer.innerHTML = `
-    <div style="color:white;text-align:center;font-size:26px;opacity:0.95;">
-      Te quiero muchísimo, Sofía. 💖
-    </div>
-  `;
-};
+renderLyrics();
 </script>
 
 </body>
