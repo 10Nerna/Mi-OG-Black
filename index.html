@@ -2,31 +2,42 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OG Black</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mi OG Black 💗</title>
+
+    <!-- Meta tags para que se vea bonito en WhatsApp -->
+    <meta property="og:title" content="Mi OG Black ❤️">
+    <meta property="og:description" content="Te quiero, Sofía.">
+    <meta property="og:url" content="https://10nerna.github.io/Mi-OG-Black/">
+    <meta property="og:image" content="https://10nerna.github.io/Mi-OG-Black/logo.jpg">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="10nerna.github.io">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         body {
             margin: 0;
             padding: 0;
             height: 100vh;
-            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            background: #0f0f0f;
             color: #e5e5e5;
             font-family: 'Inter', sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            touch-action: manipulation;
         }
 
         .player {
             width: 100%;
-            max-width: 460px;
-            background: rgba(30, 30, 30, 0.95);
-            border-radius: 24px;
-            padding: 30px 25px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            max-width: 420px;
+            background: #121212;
+            border-radius: 28px;
+            padding: 30px 20px 40px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+            user-select: none;
         }
 
         .album-art {
@@ -34,88 +45,92 @@
             aspect-ratio: 1 / 1;
             background: url('sofia.jpg') center/cover no-repeat;
             border-radius: 18px;
-            margin-bottom: 25px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+            margin-bottom: 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
         }
 
         .title {
-            font-size: 1.7rem;
-            font-weight: 600;
+            font-size: 1.85rem;
+            font-weight: 700;
             text-align: center;
-            margin-bottom: 8px;
-            color: #f0f0f0;
+            margin-bottom: 4px;
+            color: #ffffff;
         }
 
         .artist {
+            font-size: 1.05rem;
             text-align: center;
             color: #a0a0a0;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
-        .progress-container {
-            margin: 20px 0 35px;
-        }
-
-        .progress-bar {
-            height: 5px;
-            background: #444;
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-
-        .progress {
-            height: 100%;
-            width: 0%;
-            background: #888;
-            transition: width 0.2s linear;
-        }
-
-        .time {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: #888;
-            margin-top: 6px;
-        }
-
+        /* Controles */
         .controls {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 30px;
+            gap: 50px;
             margin-bottom: 30px;
         }
 
         .controls button {
             background: none;
             border: none;
-            color: #ccc;
-            font-size: 1.8rem;
+            color: #b3b3b3;
+            font-size: 2.2rem;
             cursor: pointer;
+            padding: 8px;
         }
 
         .play-pause {
-            width: 66px;
-            height: 66px;
-            background: #666;
-            color: white;
+            width: 68px;
+            height: 68px;
+            background: #ffffff;
+            color: #121212;
             border: none;
             border-radius: 50%;
             font-size: 2.1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.25);
         }
 
-        /* === LYRICS ESTILO SPOTIFY === */
+        /* Barra de progreso */
+        .progress-container {
+            margin: 0 10px 35px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #333;
+            border-radius: 9999px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background: #ffffff;
+            transition: width 0.1s linear;
+        }
+
+        .time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            color: #777;
+            margin-top: 6px;
+        }
+
+        /* Lyrics */
         .lyrics-container {
-            height: 220px;
+            height: 260px;
             overflow-y: auto;
-            overflow-x: hidden;
-            padding: 10px 0;
-            margin: 20px 0;
-            scrollbar-width: none; /* oculta scrollbar en firefox */
+            padding: 10px 15px;
+            text-align: center;
+            scrollbar-width: none;
         }
 
         .lyrics-container::-webkit-scrollbar {
@@ -123,29 +138,24 @@
         }
 
         .lyric-line {
-            text-align: center;
-            font-size: 1.22rem;
-            line-height: 1.65;
-            padding: 6px 20px;
+            font-size: 1.18rem;
+            line-height: 1.7;
+            padding: 8px 0;
             color: #888;
             transition: all 0.4s ease;
-            opacity: 0.75;
-            margin: 4px 0;
         }
 
         .lyric-line.active {
             color: #ffffff;
             font-weight: 600;
-            font-size: 1.32rem;
-            opacity: 1;
-            transform: scale(1.02);
+            font-size: 1.28rem;
         }
 
         .footer {
             text-align: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #777;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #555;
         }
     </style>
 </head>
@@ -154,11 +164,17 @@
     <div class="player">
         <div class="album-art"></div>
         
-        <div class="title">OG Black</div>
+        <div class="title">𝑀𝒾 𝒪𝒢 𝐵𝓁𝒶𝒸𝓀 ღ</div>
         <div class="artist">Tu Artista</div>
 
+        <div class="controls">
+            <button id="btn-back">↞</button>
+            <button class="play-pause" id="play-pause">▶</button>
+            <button id="btn-forward">↠</button>
+        </div>
+
         <div class="progress-container">
-            <div class="progress-bar">
+            <div class="progress-bar" id="progressBar">
                 <div class="progress" id="progress"></div>
             </div>
             <div class="time">
@@ -167,17 +183,9 @@
             </div>
         </div>
 
-        <div class="controls">
-            <button>⇄</button>
-            <button>⫻</button>
-            <button class="play-pause" id="play-pause">▶</button>
-            <button>⫻</button>
-            <button>⟳</button>
-        </div>
-
         <div class="lyrics-container" id="lyricsContainer"></div>
 
-        <div class="footer">OG Black</div>
+        <div class="footer">OG Black </div>
     </div>
 
     <audio id="audio" src="OGBlack.MP3" preload="metadata"></audio>
@@ -186,6 +194,7 @@
         const audio = document.getElementById('audio');
         const playPauseBtn = document.getElementById('play-pause');
         const progress = document.getElementById('progress');
+        const progressBar = document.getElementById('progressBar');
         const currentTimeEl = document.getElementById('current-time');
         const durationEl = document.getElementById('duration');
         const lyricsContainer = document.getElementById('lyricsContainer');
@@ -250,12 +259,7 @@
 
         const lyricsData = lrc.trim().split('\n').map(line => {
             const match = line.match(/\[(\d{2}):(\d{2}\.\d{2})\](.*)/);
-            if (match) {
-                return {
-                    time: parseInt(match[1]) * 60 + parseFloat(match[2]),
-                    text: match[3].trim()
-                };
-            }
+            if (match) return { time: parseInt(match[1])*60 + parseFloat(match[2]), text: match[3].trim() };
             return null;
         }).filter(Boolean);
 
@@ -273,23 +277,32 @@
                 const div = document.createElement('div');
                 div.className = 'lyric-line';
                 div.textContent = line.text;
-                div.dataset.index = i;
                 lyricsContainer.appendChild(div);
             });
         }
 
         function updateActiveLine(newIndex) {
             const lines = lyricsContainer.querySelectorAll('.lyric-line');
-            lines.forEach((line, i) => {
-                if (i === newIndex) {
-                    line.classList.add('active');
-                    // Scroll suave hacia la línea activa
-                    line.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                } else {
-                    line.classList.remove('active');
-                }
-            });
+            lines.forEach((line, i) => line.classList.toggle('active', i === newIndex));
+            if (lines[newIndex]) lines[newIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+
+        function seekTo(e) {
+            const rect = progressBar.getBoundingClientRect();
+            const pos = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+            const percent = Math.max(0, Math.min(1, pos / rect.width));
+            if (audio.duration) audio.currentTime = percent * audio.duration;
+        }
+
+        progressBar.addEventListener('click', seekTo);
+        progressBar.addEventListener('touchstart', (e) => { seekTo(e); });
+
+        document.getElementById('btn-forward').addEventListener('click', () => {
+            if (audio.duration) audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+        });
+        document.getElementById('btn-back').addEventListener('click', () => {
+            audio.currentTime = Math.max(0, audio.currentTime - 5);
+        });
 
         audio.addEventListener('timeupdate', () => {
             const percent = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
@@ -306,9 +319,7 @@
             }
         });
 
-        audio.addEventListener('loadedmetadata', () => {
-            durationEl.textContent = formatTime(audio.duration);
-        });
+        audio.addEventListener('loadedmetadata', () => durationEl.textContent = formatTime(audio.duration));
 
         playPauseBtn.addEventListener('click', () => {
             if (audio.paused) {
@@ -320,13 +331,9 @@
             }
         });
 
-        // Render inicial de todas las letras
         renderAllLyrics();
 
-        // Auto-play en primer toque
-        document.addEventListener('click', () => {
-            if (audio.paused) audio.play();
-        }, { once: true });
+        document.addEventListener('click', () => { if (audio.paused) audio.play(); }, { once: true });
     </script>
 </body>
 </html>
