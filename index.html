@@ -17,13 +17,9 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        * {
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
             height: 100dvh;
             background: #0f0f0f;
             color: #e5e5e5;
@@ -38,13 +34,10 @@
         .player {
             width: 100%;
             max-width: 420px;
-            height: 100dvh;
             background: #121212;
             border-radius: 28px;
-            padding: 20px 18px 28px;
+            padding: 24px 18px 36px;
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
-            display: flex;
-            flex-direction: column;
             user-select: none;
         }
 
@@ -53,24 +46,24 @@
             aspect-ratio: 1 / 1;
             background: url('sofia.jpg') center/cover no-repeat;
             border-radius: 18px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-            flex-shrink: 0;
         }
 
         .title {
-            font-size: 1.85rem;
+            font-size: 1.78rem;
             font-weight: 700;
             text-align: center;
             margin-bottom: 4px;
             color: #ffffff;
+            letter-spacing: -0.5px;
         }
 
         .artist {
-            font-size: 1.05rem;
+            font-size: 1.03rem;
             text-align: center;
             color: #a0a0a0;
-            margin-bottom: 26px;
+            margin-bottom: 32px;
         }
 
         .controls {
@@ -78,17 +71,24 @@
             align-items: center;
             justify-content: center;
             gap: 48px;
-            margin-bottom: 24px;
-            flex-shrink: 0;
+            margin-bottom: 28px;
+            position: relative;
         }
 
         .controls button {
             background: none;
             border: none;
             color: #b3b3b3;
-            font-size: 2.2rem;
+            font-size: 2.1rem;
             cursor: pointer;
             padding: 8px;
+        }
+
+        .control-label {
+            font-size: 0.68rem;
+            color: #666;
+            margin-top: 4px;
+            text-align: center;
         }
 
         .play-pause {
@@ -98,7 +98,7 @@
             color: #121212;
             border: none;
             border-radius: 50%;
-            font-size: 2.1rem;
+            font-size: 2.05rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -106,8 +106,7 @@
         }
 
         .progress-container {
-            margin: 0 10px 26px;
-            flex-shrink: 0;
+            margin: 0 8px 32px;
         }
 
         .progress-bar {
@@ -128,15 +127,15 @@
         .time {
             display: flex;
             justify-content: space-between;
-            font-size: 0.82rem;
+            font-size: 0.81rem;
             color: #777;
             margin-top: 6px;
         }
 
         .lyrics-container {
-            flex: 1;
+            height: 255px;
             overflow-y: auto;
-            padding: 8px 15px;
+            padding: 8px 12px;
             text-align: center;
             scrollbar-width: none;
         }
@@ -146,8 +145,8 @@
         }
 
         .lyric-line {
-            font-size: 1.19rem;
-            line-height: 1.72;
+            font-size: 1.17rem;
+            line-height: 1.75;
             padding: 9px 0;
             color: #888;
             transition: all 0.4s ease;
@@ -156,15 +155,32 @@
         .lyric-line.active {
             color: #ffffff;
             font-weight: 600;
-            font-size: 1.29rem;
+            font-size: 1.26rem;
         }
 
         .footer {
             text-align: center;
             margin-top: 12px;
-            font-size: 0.82rem;
+            font-size: 0.84rem;
             color: #555;
-            flex-shrink: 0;
+        }
+
+        /* Mensaje temporal */
+        #seek-message {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            font-size: 0.78rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
         }
     </style>
 </head>
@@ -177,10 +193,20 @@
         <div class="artist">Tu Artista</div>
 
         <div class="controls">
-            <button id="btn-back">↞</button>
+            <div style="text-align: center;">
+                <button id="btn-back">↞</button>
+                <div class="control-label">retroceder</div>
+            </div>
+            
             <button class="play-pause" id="play-pause">▶</button>
-            <button id="btn-forward">↠</button>
+            
+            <div style="text-align: center;">
+                <button id="btn-forward">↠</button>
+                <div class="control-label">adelantar</div>
+            </div>
         </div>
+
+        <div id="seek-message"></div>
 
         <div class="progress-container">
             <div class="progress-bar" id="progressBar">
@@ -188,7 +214,7 @@
             </div>
             <div class="time">
                 <span id="current-time">0:00</span>
-                <span id="duration">0:00</span>
+                <span id="duration">2:22</span>
             </div>
         </div>
 
@@ -207,6 +233,7 @@
         const currentTimeEl = document.getElementById('current-time');
         const durationEl = document.getElementById('duration');
         const lyricsContainer = document.getElementById('lyricsContainer');
+        const seekMessage = document.getElementById('seek-message');
 
         const lrc = `[00:11.70] Te saco a pasear
 [00:14.52] En un Banshee robao
@@ -280,9 +307,17 @@
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
+        function showSeekMessage(text) {
+            seekMessage.textContent = text;
+            seekMessage.style.opacity = '1';
+            setTimeout(() => {
+                seekMessage.style.opacity = '0';
+            }, 1200);
+        }
+
         function renderAllLyrics() {
             lyricsContainer.innerHTML = '';
-            lyricsData.forEach((line, i) => {
+            lyricsData.forEach((line) => {
                 const div = document.createElement('div');
                 div.className = 'lyric-line';
                 div.textContent = line.text;
@@ -293,7 +328,9 @@
         function updateActiveLine(newIndex) {
             const lines = lyricsContainer.querySelectorAll('.lyric-line');
             lines.forEach((line, i) => line.classList.toggle('active', i === newIndex));
-            if (lines[newIndex]) lines[newIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (lines[newIndex]) {
+                lines[newIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         }
 
         function seekTo(e) {
@@ -304,13 +341,20 @@
         }
 
         progressBar.addEventListener('click', seekTo);
-        progressBar.addEventListener('touchstart', (e) => { seekTo(e); });
+        progressBar.addEventListener('touchstart', seekTo);
 
+        // Botón Adelantar
         document.getElementById('btn-forward').addEventListener('click', () => {
-            if (audio.duration) audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+            if (audio.duration) {
+                audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+                showSeekMessage('+5 segundos');
+            }
         });
+
+        // Botón Retroceder
         document.getElementById('btn-back').addEventListener('click', () => {
             audio.currentTime = Math.max(0, audio.currentTime - 5);
+            showSeekMessage('-5 segundos');
         });
 
         audio.addEventListener('timeupdate', () => {
@@ -328,7 +372,9 @@
             }
         });
 
-        audio.addEventListener('loadedmetadata', () => durationEl.textContent = formatTime(audio.duration));
+        audio.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(audio.duration);
+        });
 
         playPauseBtn.addEventListener('click', () => {
             if (audio.paused) {
@@ -340,22 +386,21 @@
             }
         });
 
-        renderAllLyrics();
-
-        // Pausar cuando se cambia de pestaña
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') {
-                if (!audio.paused) {
-                    audio.pause();
-                    playPauseBtn.textContent = '▶';
-                }
+            if (document.visibilityState === 'hidden' && !audio.paused) {
+                audio.pause();
+                playPauseBtn.textContent = '▶';
             }
         });
 
-        // Auto play al primer toque
-        document.addEventListener('click', () => { 
-            if (audio.paused) audio.play(); 
-        }, { once: true });
+        window.addEventListener('pagehide', () => {
+            if (!audio.paused) {
+                audio.pause();
+                playPauseBtn.textContent = '▶';
+            }
+        });
+
+        renderAllLyrics();
     </script>
 </body>
 </html>
