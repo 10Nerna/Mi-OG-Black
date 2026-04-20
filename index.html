@@ -2,8 +2,6 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-
-<!-- ✅ FIX PRINCIPAL -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Mi OG Black 💗</title>
@@ -17,19 +15,23 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-body {
+* {
     margin: 0;
     padding: 0;
-    min-height: 100vh; /* ✅ mejor compatibilidad */
-    background: #0f0f0f;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    background: #0a0a0a;
     color: #e5e5e5;
     font-family: 'Inter', sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden; /* Evita scroll general */
 }
 
-/* ✅ Ajuste real de tamaño */
 .player {
     width: 92%;
     max-width: 380px;
@@ -38,8 +40,10 @@ body {
     padding: 28px 22px 34px;
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
     user-select: none;
+    position: relative;
 }
 
+/* Fondo sólido simple */
 .album-art {
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -49,21 +53,20 @@ body {
     box-shadow: 0 25px 60px rgba(0,0,0,0.75);
 }
 
-/* ✅ TEXTO NORMAL (fix importante) */
 .title {
-    font-size: 1.9rem;
+    font-size: 1.85rem;
     font-weight: 700;
     text-align: center;
     margin-bottom: 6px;
     color: #fff;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
 }
 
 .artist {
     font-size: 1rem;
     text-align: center;
     color: #a0a0a0;
-    margin-bottom: 26px;
+    margin-bottom: 28px;
 }
 
 .controls {
@@ -72,7 +75,6 @@ body {
     justify-content: center;
     gap: 40px;
     margin-bottom: 24px;
-    position: relative;
 }
 
 .controls button {
@@ -81,25 +83,20 @@ body {
     color: #b3b3b3;
     font-size: 2rem;
     padding: 8px;
-}
-
-.control-label {
-    font-size: 0.7rem;
-    color: #777;
-    margin-top: 4px;
-    text-align: center;
+    cursor: pointer;
 }
 
 .play-pause {
-    width: 70px;
-    height: 70px;
+    width: 72px;
+    height: 72px;
     background: #fff;
     color: #121212;
     border-radius: 50%;
-    font-size: 2rem;
+    font-size: 2.1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
 }
 
 .progress-container {
@@ -117,63 +114,76 @@ body {
 .progress {
     height: 100%;
     width: 0%;
-    background: #fff;
+    background: linear-gradient(to right, #fff, #ddd);
 }
 
 .time {
     display: flex;
     justify-content: space-between;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: #777;
     margin-top: 8px;
 }
 
+/* Lyrics mejorado - sin scroll automático que mueva toda la página */
 .lyrics-container {
-    height: 240px;
+    height: 210px;
     overflow-y: auto;
-    padding: 6px 12px;
+    padding: 10px 16px;
     text-align: center;
-    scrollbar-width: none;
+    scrollbar-width: thin;
+    scrollbar-color: #444 #1f1f1f;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .lyrics-container::-webkit-scrollbar {
-    display: none;
+    width: 4px;
+}
+
+.lyrics-container::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 20px;
 }
 
 .lyric-line {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    padding: 8px 0;
+    font-size: 1.08rem;
+    line-height: 1.75;
+    padding: 9px 0;
     color: #888;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    min-height: 1.75em;
 }
 
 .lyric-line.active {
-    color: #fff;
+    color: #ffffff;
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: 1.18rem;
+    text-shadow: 0 0 15px rgba(255,255,255,0.4);
+}
+
+/* Mensaje de seek */
+#seek-message {
+    position: absolute;
+    top: -48px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    font-size: 0.82rem;
+    padding: 7px 16px;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 .footer {
     text-align: center;
-    margin-top: 10px;
-    font-size: 0.8rem;
+    margin-top: 14px;
+    font-size: 0.78rem;
     color: #555;
-}
-
-/* mensaje */
-#seek-message {
-    position: absolute;
-    top: -45px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.8);
-    color: #fff;
-    font-size: 0.8rem;
-    padding: 6px 14px;
-    border-radius: 20px;
-    opacity: 0;
-    transition: 0.3s;
 }
 </style>
 </head>
@@ -184,21 +194,18 @@ body {
 
     <div class="album-art"></div>
 
-    <!-- ✅ FIX -->
     <div class="title">MI OG BLACK ♡</div>
     <div class="artist">Tu Artista</div>
 
     <div class="controls">
         <div style="text-align:center;">
             <button id="btn-back">↞</button>
-            <div class="control-label">Retroceder</div>
         </div>
 
         <button class="play-pause" id="play-pause">▶</button>
 
         <div style="text-align:center;">
             <button id="btn-forward">↠</button>
-            <div class="control-label">Adelantar</div>
         </div>
     </div>
 
@@ -214,6 +221,7 @@ body {
         </div>
     </div>
 
+    <!-- Lyrics con scroll interno (no mueve la página) -->
     <div class="lyrics-container" id="lyricsContainer"></div>
 
     <div class="footer">MI OG BLACK</div>
@@ -232,7 +240,7 @@ const durationEl = document.getElementById('duration');
 const lyricsContainer = document.getElementById('lyricsContainer');
 const seekMessage = document.getElementById('seek-message');
 
-        const lrc = `[00:11.70] Te saco a pasear
+const lrc = `[00:11.70] Te saco a pasear
 [00:14.52] En un Banshee robao
 [00:18.13] Como OG Black
 [00:19.64] Como OG Black
@@ -290,7 +298,6 @@ const seekMessage = document.getElementById('seek-message');
 [02:15.82] Bellaqueo
 [02:18.64] Bella-`;
 
-/* === TU LÓGICA ORIGINAL === */
 const lyricsData = lrc.trim().split('\n').map(line => {
     const match = line.match(/\[(\d{2}):(\d{2}\.\d{2})\](.*)/);
     if (match) return {
@@ -301,86 +308,104 @@ const lyricsData = lrc.trim().split('\n').map(line => {
 
 let currentIndex = -1;
 
-function formatTime(sec){
-    const m = Math.floor(sec/60);
-    const s = Math.floor(sec%60);
-    return `${m}:${s<10?'0':''}${s}`;
+function formatTime(sec) {
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
-function showSeekMessage(text){
+function showSeekMessage(text) {
     seekMessage.textContent = text;
     seekMessage.style.opacity = '1';
-    setTimeout(()=> seekMessage.style.opacity='0',1200);
+    setTimeout(() => seekMessage.style.opacity = '0', 1300);
 }
 
-function renderAllLyrics(){
-    lyricsContainer.innerHTML='';
-    lyricsData.forEach(line=>{
-        const div=document.createElement('div');
-        div.className='lyric-line';
-        div.textContent=line.text;
+function renderAllLyrics() {
+    lyricsContainer.innerHTML = '';
+    lyricsData.forEach(line => {
+        const div = document.createElement('div');
+        div.className = 'lyric-line';
+        div.textContent = line.text;
         lyricsContainer.appendChild(div);
     });
 }
 
-function updateActiveLine(i){
+function updateActiveLine(i) {
     const lines = lyricsContainer.querySelectorAll('.lyric-line');
-    lines.forEach((l,idx)=>l.classList.toggle('active', idx===i));
-    if(lines[i]){
-        lines[i].scrollIntoView({behavior:'smooth',block:'center'});
+    lines.forEach((l, idx) => l.classList.toggle('active', idx === i));
+    
+    if (lines[i]) {
+        lines[i].scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
     }
 }
 
-function seekTo(e){
-    const rect=progressBar.getBoundingClientRect();
-    const pos=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
-    const percent=Math.max(0,Math.min(1,pos/rect.width));
-    if(audio.duration) audio.currentTime=percent*audio.duration;
+function seekTo(e) {
+    const rect = progressBar.getBoundingClientRect();
+    const pos = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const percent = Math.max(0, Math.min(1, pos / rect.width));
+    if (audio.duration) audio.currentTime = percent * audio.duration;
 }
 
-progressBar.addEventListener('click',seekTo);
-progressBar.addEventListener('touchstart',seekTo);
-
-document.getElementById('btn-forward').onclick=()=>{
-    audio.currentTime+=5;
-    showSeekMessage('+5s');
+// Controles
+document.getElementById('btn-forward').onclick = () => {
+    if (audio.duration) {
+        audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+        showSeekMessage('+5s');
+    }
 };
 
-document.getElementById('btn-back').onclick=()=>{
-    audio.currentTime-=5;
+document.getElementById('btn-back').onclick = () => {
+    audio.currentTime = Math.max(0, audio.currentTime - 5);
     showSeekMessage('-5s');
 };
 
-audio.addEventListener('timeupdate',()=>{
-    const percent=(audio.currentTime/audio.duration)*100;
-    progress.style.width=percent+'%';
-    currentTimeEl.textContent=formatTime(audio.currentTime);
+// Pausar cuando se cambia de pestaña o se minimiza la ventana
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden && !audio.paused) {
+        audio.pause();
+        playPauseBtn.textContent = '▶';
+    }
+});
 
-    const newIndex=lyricsData.findIndex((l,i)=>
-        audio.currentTime>=l.time &&
-        (i===lyricsData.length-1 || audio.currentTime<lyricsData[i+1].time)
+progressBar.addEventListener('click', seekTo);
+progressBar.addEventListener('touchstart', seekTo);
+
+audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    
+    const percent = (audio.currentTime / audio.duration) * 100;
+    progress.style.width = percent + '%';
+    currentTimeEl.textContent = formatTime(audio.currentTime);
+
+    const newIndex = lyricsData.findIndex((l, i) =>
+        audio.currentTime >= l.time &&
+        (i === lyricsData.length - 1 || audio.currentTime < lyricsData[i + 1].time)
     );
 
-    if(newIndex!==-1 && newIndex!==currentIndex){
-        currentIndex=newIndex;
+    if (newIndex !== -1 && newIndex !== currentIndex) {
+        currentIndex = newIndex;
         updateActiveLine(newIndex);
     }
 });
 
-audio.addEventListener('loadedmetadata',()=>{
-    durationEl.textContent=formatTime(audio.duration);
+audio.addEventListener('loadedmetadata', () => {
+    durationEl.textContent = formatTime(audio.duration);
 });
 
-playPauseBtn.onclick=()=>{
-    if(audio.paused){
+playPauseBtn.onclick = () => {
+    if (audio.paused) {
         audio.play();
-        playPauseBtn.textContent='❚❚';
-    }else{
+        playPauseBtn.textContent = '❚❚';
+    } else {
         audio.pause();
-        playPauseBtn.textContent='▶';
+        playPauseBtn.textContent = '▶';
     }
 };
 
+// Inicializar
 renderAllLyrics();
 </script>
 
