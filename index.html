@@ -2,8 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- Meta viewport para forzar modo escritorio automáticamente -->
-    <meta name="viewport" content="width=1024, initial-scale=0.78">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <title>Mi OG Black 💗</title>
 
@@ -198,7 +197,6 @@
         const durationEl = document.getElementById('duration');
         const lyricsContainer = document.getElementById('lyricsContainer');
 
-        // === TU LRC (sin cambios) ===
         const lrc = `[00:11.70] Te saco a pasear
 [00:14.52] En un Banshee robao
 [00:18.13] Como OG Black
@@ -333,27 +331,20 @@
 
         renderAllLyrics();
 
-        // === NUEVO: Pausar cuando cambies de pestaña o minimices ===
+        // Pausar la música cuando el usuario salga de la pestaña o minimice
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') {
                 if (!audio.paused) {
                     audio.pause();
-                    // El botón queda en pause (visualmente)
                     playPauseBtn.textContent = '▶';
                 }
             }
-            // Si quieres que siga reproduciendo al volver, no hagas nada aquí.
-            // Si quieres que vuelva a reproducir automáticamente al volver, descomenta las líneas de abajo:
-            // else {
-            //     if (audio.paused) {
-            //         audio.play();
-            //         playPauseBtn.textContent = '❚❚';
-            //     }
-            // }
         });
 
-        // Auto play al tocar (como tenías)
-        document.addEventListener('click', () => { if (audio.paused) audio.play(); }, { once: true });
+        // Auto play al tocar la pantalla (primera interacción)
+        document.addEventListener('click', () => { 
+            if (audio.paused) audio.play(); 
+        }, { once: true });
     </script>
 </body>
 </html>
