@@ -6,11 +6,6 @@
 
 <title>Mi OG Black 💗</title>
 
-<meta property="og:title" content="Mi OG Black ❤️">
-<meta property="og:description" content="Te quiero, Sofía.">
-<meta property="og:url" content="https://10nerna.github.io/Mi-OG-Black/">
-<meta property="og:image" content="https://10nerna.github.io/Mi-OG-Black/logo.jpg">
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -58,7 +53,6 @@ body {
     text-align: center;
     margin-bottom: 6px;
     color: #ffffff;
-    letter-spacing: 0.5px;
 }
 
 .artist {
@@ -136,6 +130,8 @@ body {
     margin-top: 20px;
     scrollbar-width: thin;
     scrollbar-color: #555 #2a2a2a;
+    /* Importante: evita que el scroll se mueva solo */
+    scroll-behavior: auto;
 }
 
 .lyrics-container::-webkit-scrollbar {
@@ -159,11 +155,13 @@ body {
     color: #ffffff;
     font-weight: 600;
     font-size: 1.22rem;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
 }
 
 #seek-message {
     position: absolute;
-    top: 115px;           /* justo encima de los controles */
+    top: 118px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(30,30,30,0.95);
@@ -186,30 +184,15 @@ body {
     color: #555;
 }
 
-/* Ajustes para móviles más pequeños */
 @media (max-width: 380px) {
     .player {
         padding: 20px 16px 28px;
         border-radius: 24px;
     }
-    
-    .title {
-        font-size: 1.55rem;
-    }
-    
-    .play-pause {
-        width: 64px;
-        height: 64px;
-        font-size: 2rem;
-    }
-    
-    .controls {
-        gap: 26px;
-    }
-    
-    .lyrics-container {
-        max-height: 190px;
-    }
+    .title { font-size: 1.55rem; }
+    .play-pause { width: 64px; height: 64px; font-size: 2rem; }
+    .controls { gap: 26px; }
+    .lyrics-container { max-height: 190px; }
 }
 </style>
 </head>
@@ -339,7 +322,7 @@ function showSeekMessage(text) {
     setTimeout(() => {
         seekMessage.style.opacity = '0';
         seekMessage.style.transform = 'translateX(-50%)';
-    }, 1400);
+    }, 1500);
 }
 
 function renderAllLyrics() {
@@ -354,15 +337,15 @@ function renderAllLyrics() {
 
 function updateActiveLine(i) {
     const lines = lyricsContainer.querySelectorAll('.lyric-line');
-    lines.forEach((l, idx) => l.classList.toggle('active', idx === i));
     
-    // Solo hace scroll si el usuario no está tocando la letra
-    if (lines[i] && !lyricsContainer.matches(':active')) {
-        lines[i].scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-        });
-    }
+    lines.forEach((l, idx) => {
+        l.classList.toggle('active', idx === i);
+    });
+
+    // ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
+    // ¡¡¡ AQUÍ ESTÁ LA CORRECCIÓN PRINCIPAL !!!
+    // NO hacemos scrollIntoView nunca más
+    // Solo cambiamos el color y el tamaño
 }
 
 function seekTo(e) {
@@ -372,7 +355,7 @@ function seekTo(e) {
     if (audio.duration) audio.currentTime = percent * audio.duration;
 }
 
-// Botones de adelantar y retroceder
+// Botones
 document.getElementById('btn-forward').onclick = () => {
     if (audio.duration) {
         audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
@@ -385,7 +368,7 @@ document.getElementById('btn-back').onclick = () => {
     showSeekMessage('-5 segundos');
 };
 
-// Pausar música cuando se cambia de pestaña o se minimiza
+// Pausar al cambiar de pestaña
 document.addEventListener('visibilitychange', () => {
     if (document.hidden && !audio.paused) {
         audio.pause();
@@ -428,7 +411,6 @@ playPauseBtn.onclick = () => {
     }
 };
 
-// Iniciar
 renderAllLyrics();
 </script>
 
